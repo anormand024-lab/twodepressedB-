@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Literature Club</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Share+Tech+Mono&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pink: #f48fb1;
+    --deep-pink: #c2185b;
+    --pale: #fce4ec;
+    --dark: #0a0a0f;
+    --darker: #050508;
+    --glitch: #00ff88;
+    --red-alert: #ff1744;
+    --cream: #fff8f0;
+    --text-dark: #1a1a2e;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--darker);
+    font-family: 'Crimson Pro', Georgia, serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #game {
+    width: 100vw; height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── BACKGROUND ── */
+  #bg {
+    position: absolute; inset: 0;
+    background: #1a0a1e;
+    transition: background 1.2s ease;
+    z-index: 0;
+  }
+
+  #bg.scene-club {
+    background: linear-gradient(180deg, #1a0a1e 0%, #2d1b33 60%, #1a0f20 100%);
+  }
+  #bg.scene-classroom {
+    background: linear-gradient(180deg, #0d1b2a 0%, #1b2838 60%, #0d1520 100%);
+  }
+  #bg.scene-glitch {
+    background: #000;
+    animation: bgGlitch 0.3s infinite;
+  }
+  #bg.scene-white {
+    background: #fff;
+  }
+  #bg.scene-void {
+    background: #000;
+  }
+
+  @keyframes bgGlitch {
+    0%   { background: #000; }
+    20%  { background: #0a000a; }
+    40%  { background: #00000a; }
+    60%  { background: #050005; }
+    80%  { background: #000a00; }
+    100% { background: #000; }
+  }
+
+  /* ── BACKGROUND IMAGE ── */
+  #bg-img {
+    position: absolute; inset: 0;
+    z-index: 2;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  }
+  #bg-img.visible { opacity: 1; }
+
+  /* ── BG DECORATIONS ── */
+  .bg-deco {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .cherry-petal {
+    position: absolute;
+    width: 8px; height: 12px;
+    background: #f8bbd0;
+    border-radius: 50% 0 50% 0;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── CHARACTERS ── */
+  #chars {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .char-sprite {
+    position: absolute;
+    bottom: 18%;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.6s cubic-bezier(.22,1,.36,1), opacity 0.5s;
+    transform-origin: bottom center;
+  }
+
+  .char-sprite.hidden { opacity: 0; transform: translateY(40px) scale(0.95); }
+  .char-sprite.visible { opacity: 1; transform: translateY(0) scale(1); }
+  .char-sprite.dimmed { opacity: 0.4; filter: saturate(0.3); }
+  .char-sprite.left { left: 4%; }
+  .char-sprite.center { left: 50%; transform: translateX(-50%); }
+  .char-sprite.center.visible { transform: translateX(-50%) translateY(0); }
+  .char-sprite.right { right: 4%; }
+
+  .char-body {
+    width: 200px;
+    height: 340px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* char image override */
+  .char-img {
+    width: 200px;
+    height: 340px;
+    object-fit: contain;
+    object-position: bottom center;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));
+    transition: filter 0.4s;
+    display: block;
+  }
+  .char-sprite.active .char-img {
+    filter: drop-shadow(0 8px 24px rgba(244,143,177,0.4));
+  }
+
+  /* SVG character art inline */
+  .char-svg {
+    width: 200px;
+    height: 340px;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));
+    transition: filter 0.4s;
+  }
+
+  .char-sprite.active .char-svg {
+    filter: drop-shadow(0 8px 24px rgba(244,143,177,0.4));
+  }
+
+  .char-sprite.glitch-mode .char-svg {
+    animation: charGlitch 0.15s infinite;
+  }
+
+  @keyframes charGlitch {
+    0%   { transform: translate(0,0) skewX(0); }
+    20%  { transform: translate(-4px,2px) skewX(2deg); }
+    40%  { transform: translate(4px,-2px) skewX(-2deg); }
+    60%  { transform: translate(-2px,4px) skewX(1deg); }
+    80%  { transform: translate(2px,-4px) skewX(-1deg); }
+    100% { transform: translate(0,0) skewX(0); }
+  }
+
+  /* ── TEXTBOX ── */
+  #textbox-wrap {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0 2.5% 2%;
+    z-index: 50;
+  }
+
+  #textbox {
+    background: rgba(8, 4, 14, 0.88);
+    border: 1px solid rgba(244,143,177,0.25);
+    border-radius: 4px;
+    padding: 1.2rem 1.6rem 1.4rem;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 -4px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(244,143,177,0.1);
+    position: relative;
+    min-height: 120px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  #textbox:hover { border-color: rgba(244,143,177,0.45); }
+
+  #nametag {
+    position: absolute;
+    top: -2px;
+    left: 1.6rem;
+    transform: translateY(-100%);
+    background: rgba(8, 4, 14, 0.9);
+    border: 1px solid rgba(244,143,177,0.3);
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    padding: 0.25rem 1rem 0.15rem;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    color: var(--pink);
+    letter-spacing: 0.05em;
+    min-width: 80px;
+    text-align: center;
+    transition: color 0.4s;
+  }
+
+  #dialogue {
+    font-size: 1.18rem;
+    line-height: 1.65;
+    color: #f0e8f5;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    min-height: 3.5rem;
+  }
+
+  #cursor {
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: var(--pink);
+    border-radius: 50%;
+    margin-left: 6px;
+    vertical-align: middle;
+    animation: blink 1.1s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  #cursor.show { opacity: 1; }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.15; }
+  }
+
+  /* ── CHOICES ── */
+  #choices {
+    position: absolute;
+    bottom: 22%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    z-index: 60;
+    width: 60%;
+    max-width: 540px;
+    display: none;
+  }
+
+  .choice-btn {
+    background: rgba(8, 4, 14, 0.9);
+    border: 1px solid rgba(244,143,177,0.35);
+    border-radius: 3px;
+    color: #f0e8f5;
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-align: left;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(6px);
+  }
+
+  .choice-btn::before {
+    content: '▸ ';
+    color: var(--pink);
+    opacity: 0;
+    margin-right: 4px;
+    transition: opacity 0.2s;
+  }
+
+  .choice-btn:hover {
+    background: rgba(244,143,177,0.12);
+    border-color: var(--pink);
+    padding-left: 2rem;
+    color: #fff;
+  }
+  .choice-btn:hover::before { opacity: 1; }
+
+  /* ── TITLE SCREEN ── */
+  #title-screen {
+    position: absolute; inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at 50% 60%, #1e0a2e 0%, #050508 70%);
+  }
+
+  .title-logo {
+    font-family: 'VT323', monospace;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    color: #fff;
+    text-align: center;
+    line-height: 1.15;
+    text-shadow: 0 0 40px rgba(244,143,177,0.5);
+    margin-bottom: 0.3rem;
+    animation: titlePulse 3s ease-in-out infinite;
+  }
+
+  .title-sub {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.4rem);
+    color: var(--pink);
+    letter-spacing: 0.2em;
+    text-align: center;
+    margin-bottom: 3.5rem;
+    opacity: 0.85;
+  }
+
+  @keyframes titlePulse {
+    0%, 100% { text-shadow: 0 0 40px rgba(244,143,177,0.5); }
+    50%       { text-shadow: 0 0 80px rgba(244,143,177,0.9), 0 0 120px rgba(244,143,177,0.3); }
+  }
+
+  .start-btn {
+    font-family: 'VT323', monospace;
+    font-size: 1.8rem;
+    color: var(--pink);
+    background: transparent;
+    border: 1px solid rgba(244,143,177,0.4);
+    padding: 0.6rem 2.5rem;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    transition: all 0.3s;
+    animation: startPulse 2s ease-in-out infinite;
+  }
+
+  .start-btn:hover {
+    background: rgba(244,143,177,0.1);
+    border-color: var(--pink);
+    box-shadow: 0 0 20px rgba(244,143,177,0.3);
+  }
+
+  @keyframes startPulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+  }
+
+  .title-warning {
+    position: absolute;
+    bottom: 3rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.3);
+    text-align: center;
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  /* ── GLITCH OVERLAY ── */
+  #glitch-overlay {
+    position: fixed; inset: 0;
+    z-index: 200;
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: screen;
+  }
+
+  #glitch-overlay.active {
+    animation: glitchFlash 0.6s forwards;
+  }
+
+  @keyframes glitchFlash {
+    0%  { opacity: 0; background: transparent; }
+    10% { opacity: 1; background: rgba(0,255,136,0.15); }
+    15% { opacity: 0; }
+    30% { opacity: 1; background: rgba(255,23,68,0.12); }
+    35% { opacity: 0; }
+    50% { opacity: 1; background: rgba(0,255,136,0.08); }
+    100%{ opacity: 0; }
+  }
+
+  /* ── SCANLINES ── */
+  #scanlines {
+    position: fixed; inset: 0;
+    z-index: 300;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 4px
+    );
+    opacity: 0.6;
+  }
+
+  /* ── CG / FULL SCREEN IMAGE ── */
+  #cg-overlay {
+    position: absolute; inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s;
+  }
+  #cg-overlay.show { opacity: 1; pointer-events: all; cursor: pointer; }
+
+  /* ── TRANSITIONS ── */
+  #fade {
+    position: fixed; inset: 0;
+    z-index: 500;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+  #fade.in  { opacity: 1; pointer-events: all; }
+
+  /* ── UI CHROME ── */
+  #ui-top {
+    position: absolute;
+    top: 1rem; right: 1.5rem;
+    z-index: 60;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .ui-btn {
+    background: rgba(8,4,14,0.7);
+    border: 1px solid rgba(244,143,177,0.2);
+    color: rgba(244,143,177,0.7);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .ui-btn:hover { border-color: var(--pink); color: var(--pink); }
+
+  /* ── POEM MINIGAME ── */
+  #poem-game {
+    position: absolute; inset: 0;
+    z-index: 90;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(5,5,10,0.95);
+    backdrop-filter: blur(12px);
+    gap: 1.5rem;
+    padding: 2rem;
+  }
+  #poem-game.show { display: flex; }
+
+  .poem-title {
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+    color: var(--pink);
+    letter-spacing: 0.2em;
+    text-align: center;
+  }
+
+  .word-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+    max-width: 700px;
+  }
+
+  .word-chip {
+    background: rgba(244,143,177,0.08);
+    border: 1px solid rgba(244,143,177,0.3);
+    border-radius: 2px;
+    color: #f0e8f5;
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.1rem;
+    padding: 0.35rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .word-chip:hover {
+    background: rgba(244,143,177,0.2);
+    border-color: var(--pink);
+    transform: translateY(-2px);
+  }
+  .word-chip.used {
+    opacity: 0.2;
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+
+  .poem-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 120px;
+    max-width: 500px;
+    width: 100%;
+  }
+
+  .poem-line {
+    border-bottom: 1px solid rgba(244,143,177,0.2);
+    min-height: 2rem;
+    padding: 0.2rem 0.5rem;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: #e8d8f0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .poem-word-placed {
+    background: rgba(244,143,177,0.12);
+    border-radius: 2px;
+    padding: 0.1rem 0.4rem;
+    color: var(--pink);
+    cursor: pointer;
+    font-style: normal;
+  }
+
+  .poem-submit {
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: var(--pink);
+    background: transparent;
+    border: 1px solid rgba(244,143,177,0.4);
+    padding: 0.5rem 2rem;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    transition: all 0.2s;
+  }
+  .poem-submit:hover { background: rgba(244,143,177,0.1); }
+
+  /* ── STATS/AFFECTION ── */
+  #affection-bar {
+    position: absolute;
+    top: 1rem; left: 1.5rem;
+    z-index: 60;
+    display: none;
+    gap: 0.8rem;
+    flex-direction: column;
+  }
+
+  .aff-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .aff-name {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(244,143,177,0.7);
+    letter-spacing: 0.08em;
+    width: 60px;
+  }
+
+  .aff-track {
+    width: 80px;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .aff-fill {
+    height: 100%;
+    background: var(--pink);
+    border-radius: 2px;
+    transition: width 0.6s ease;
+  }
+
+  /* ── HORROR EFFECTS ── */
+  .corrupted-text {
+    color: var(--red-alert) !important;
+    font-family: 'Share Tech Mono', monospace !important;
+    animation: corrupt 0.08s infinite !important;
+  }
+
+  @keyframes corrupt {
+    0%,100% { clip-path: inset(0 0 0 0); }
+    25%      { clip-path: inset(20% 0 60% 0); transform: skewX(3deg); }
+    50%      { clip-path: inset(50% 0 20% 0); transform: skewX(-3deg); }
+    75%      { clip-path: inset(10% 0 80% 0); }
+  }
+
+  #static-noise {
+    position: fixed; inset: 0;
+    z-index: 400;
+    pointer-events: none;
+    opacity: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+    background-size: 256px;
+    mix-blend-mode: overlay;
+  }
+  #static-noise.show { opacity: 0.5; animation: noiseAnim 0.05s infinite; }
+
+  @keyframes noiseAnim {
+    0%   { background-position: 0 0; }
+    100% { background-position: 256px 256px; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .char-sprite { width: 220px; }
+    .char-svg { width: 140px; height: 240px; }
+    .char-sprite.left { left: 0; }
+    .char-sprite.right { right: 0; }
+    #dialogue { font-size: 1rem; }
+    #choices { width: 90%; bottom: 18%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LAYERS -->
+<div id="game">
+  <div id="bg" class="scene-club"></div>
+  <div id="bg-img"></div>
+  <div class="bg-deco" id="bg-deco"></div>
+  <div id="chars">
+    <!-- Sprites générés en SVG -->
+    <div class="char-sprite left hidden" id="char-lyra">
+      <svg class="char-svg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- LYRA - rose/violette, cheveux longs -->
+        <!-- Corps -->
+        <rect x="65" y="240" width="70" height="90" rx="4" fill="#7b3fa0"/>
+        <!-- Jupe -->
+        <path d="M55,290 Q100,310 145,290 L155,340 L45,340 Z" fill="#9c27b0"/>
+        <!-- Bras gauche -->
+        <rect x="28" y="240" width="38" height="18" rx="9" fill="#7b3fa0"/>
+        <!-- Bras droit -->
+        <rect x="134" y="240" width="38" height="18" rx="9" fill="#7b3fa0"/>
+        <!-- Mains -->
+        <circle cx="25" cy="255" r="9" fill="#f9c5d0"/>
+        <circle cx="175" cy="255" r="9" fill="#f9c5d0"/>
+        <!-- Cou -->
+        <rect x="88" y="215" width="24" height="30" rx="4" fill="#f9c5d0"/>
+        <!-- Tête -->
+        <ellipse cx="100" cy="190" rx="52" ry="56" fill="#f9c5d0"/>
+        <!-- Cheveux haut -->
+        <path d="M48,190 Q50,120 100,110 Q150,120 152,190 Z" fill="#6a0dad"/>
+        <!-- Cheveux longs -->
+        <path d="M48,190 Q30,260 40,330" stroke="#6a0dad" stroke-width="22" fill="none" stroke-linecap="round"/>
+        <path d="M152,190 Q170,260 160,330" stroke="#6a0dad" stroke-width="22" fill="none" stroke-linecap="round"/>
+        <!-- Frange -->
+        <path d="M52,165 Q75,145 100,150 Q125,145 148,165" fill="#6a0dad"/>
+        <!-- Yeux -->
+        <ellipse cx="82" cy="185" rx="13" ry="14" fill="white"/>
+        <ellipse cx="118" cy="185" rx="13" ry="14" fill="white"/>
+        <ellipse cx="83" cy="186" rx="9" ry="10" fill="#4a148c"/>
+        <ellipse cx="119" cy="186" rx="9" ry="10" fill="#4a148c"/>
+        <circle cx="86" cy="182" r="3" fill="white"/>
+        <circle cx="122" cy="182" r="3" fill="white"/>
+        <!-- Sourcils -->
+        <path d="M70,170 Q82,165 94,170" stroke="#4a148c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M106,170 Q118,165 130,170" stroke="#4a148c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Nez -->
+        <ellipse cx="100" cy="198" rx="4" ry="3" fill="#f0b0c0"/>
+        <!-- Bouche -->
+        <path d="M88,210 Q100,218 112,210" stroke="#c2185b" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Ruban -->
+        <rect x="90" y="108" width="20" height="8" rx="2" fill="#f48fb1"/>
+        <!-- Étoiles accessoires -->
+        <text x="30" y="140" font-size="14" fill="#ce93d8">✦</text>
+        <text x="156" y="150" font-size="10" fill="#ce93d8">✦</text>
+      </svg>
+    </div>
+
+    <div class="char-sprite center hidden" id="char-nami">
+      <svg class="char-svg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- NAMI - bleu/gris, cheveux courts, air sérieux -->
+        <rect x="65" y="240" width="70" height="90" rx="4" fill="#1565c0"/>
+        <path d="M55,290 Q100,305 145,290 L155,340 L45,340 Z" fill="#1976d2"/>
+        <!-- Veste -->
+        <rect x="60" y="238" width="80" height="50" rx="3" fill="#0d47a1"/>
+        <rect x="95" y="238" width="10" height="50" fill="#1565c0"/>
+        <!-- Cravate -->
+        <path d="M100,238 L96,270 L100,278 L104,270 Z" fill="#ef5350"/>
+        <!-- Bras -->
+        <rect x="28" y="240" width="36" height="16" rx="8" fill="#1565c0"/>
+        <rect x="136" y="240" width="36" height="16" rx="8" fill="#1565c0"/>
+        <circle cx="24" cy="252" r="9" fill="#e0d0c8"/>
+        <circle cx="176" cy="252" r="9" fill="#e0d0c8"/>
+        <!-- Tenue (livres dans les mains) -->
+        <rect x="6" y="248" width="18" height="24" rx="2" fill="#1976d2"/>
+        <rect x="176" y="248" width="18" height="24" rx="2" fill="#e53935"/>
+        <!-- Cou -->
+        <rect x="88" y="215" width="24" height="28" rx="4" fill="#e0d0c8"/>
+        <!-- Tête -->
+        <ellipse cx="100" cy="188" rx="50" ry="53" fill="#e0d0c8"/>
+        <!-- Cheveux courts bleu-gris -->
+        <path d="M52,188 Q55,125 100,115 Q145,125 148,188 Z" fill="#455a64"/>
+        <path d="M52,188 Q44,200 50,215" fill="#455a64"/>
+        <path d="M148,188 Q156,200 150,215" fill="#455a64"/>
+        <!-- Mèche -->
+        <path d="M60,160 Q80,140 100,148" fill="#37474f"/>
+        <!-- Lunettes -->
+        <rect x="70" y="180" width="24" height="16" rx="8" fill="none" stroke="#78909c" stroke-width="2.5"/>
+        <rect x="106" y="180" width="24" height="16" rx="8" fill="none" stroke="#78909c" stroke-width="2.5"/>
+        <line x1="94" y1="188" x2="106" y2="188" stroke="#78909c" stroke-width="2"/>
+        <line x1="70" y1="188" x2="60" y2="186" stroke="#78909c" stroke-width="2"/>
+        <line x1="130" y1="188" x2="140" y2="186" stroke="#78909c" stroke-width="2"/>
+        <!-- Yeux derrière lunettes -->
+        <ellipse cx="82" cy="188" rx="8" ry="7" fill="white" opacity="0.7"/>
+        <ellipse cx="118" cy="188" rx="8" ry="7" fill="white" opacity="0.7"/>
+        <ellipse cx="83" cy="189" rx="5" ry="5" fill="#1565c0"/>
+        <ellipse cx="119" cy="189" rx="5" ry="5" fill="#1565c0"/>
+        <circle cx="85" cy="186" r="2" fill="white"/>
+        <circle cx="121" cy="186" r="2" fill="white"/>
+        <!-- Sourcils froncés -->
+        <path d="M71,175 Q82,170 93,174" stroke="#37474f" stroke-width="2.5" fill="none"/>
+        <path d="M107,174 Q118,170 129,175" stroke="#37474f" stroke-width="2.5" fill="none"/>
+        <!-- Bouche neutre -->
+        <path d="M90,207 L110,207" stroke="#b09090" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Nez -->
+        <ellipse cx="100" cy="198" rx="4" ry="2.5" fill="#d0b8b0"/>
+      </svg>
+    </div>
+
+    <div class="char-sprite right hidden" id="char-mira">
+      <svg class="char-svg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- MIRA - rousse, robe verte, souriante -->
+        <rect x="60" y="238" width="80" height="95" rx="4" fill="#2e7d32"/>
+        <path d="M48,285 Q100,315 152,285 L165,340 L35,340 Z" fill="#388e3c"/>
+        <!-- Tablier -->
+        <rect x="75" y="240" width="50" height="70" rx="3" fill="#f1f8e9" opacity="0.7"/>
+        <!-- Bras -->
+        <rect x="24" y="238" width="38" height="18" rx="9" fill="#2e7d32"/>
+        <rect x="138" y="238" width="38" height="18" rx="9" fill="#2e7d32"/>
+        <circle cx="21" cy="252" r="10" fill="#ffc1a0"/>
+        <circle cx="179" cy="252" r="10" fill="#ffc1a0"/>
+        <!-- Accessoire bras : bracelet fleur -->
+        <circle cx="21" cy="252" r="5" fill="none" stroke="#f48fb1" stroke-width="1.5"/>
+        <!-- Cou -->
+        <rect x="88" y="215" width="24" height="28" rx="4" fill="#ffc1a0"/>
+        <!-- Tête -->
+        <ellipse cx="100" cy="188" rx="52" ry="55" fill="#ffc1a0"/>
+        <!-- Cheveux roux longs et bouclés -->
+        <path d="M50,188 Q52,118 100,108 Q148,118 150,188 Z" fill="#bf360c"/>
+        <!-- Boucles -->
+        <path d="M50,188 Q25,230 30,310 Q35,330 45,340" stroke="#bf360c" stroke-width="24" fill="none" stroke-linecap="round"/>
+        <path d="M150,188 Q175,230 170,310 Q165,330 155,340" stroke="#bf360c" stroke-width="24" fill="none" stroke-linecap="round"/>
+        <!-- Ondulations -->
+        <path d="M50,188 Q38,210 42,230 Q46,250 38,265" stroke="#d84315" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <path d="M150,188 Q162,210 158,230 Q154,250 162,265" stroke="#d84315" stroke-width="8" fill="none" stroke-linecap="round"/>
+        <!-- Frange -->
+        <path d="M54,170 Q75,150 100,155 Q125,150 146,170" fill="#bf360c"/>
+        <!-- Épingle fleur -->
+        <circle cx="62" cy="155" r="6" fill="#f48fb1"/>
+        <circle cx="62" cy="155" r="3" fill="#fff"/>
+        <!-- Yeux -->
+        <ellipse cx="82" cy="186" rx="13" ry="14" fill="white"/>
+        <ellipse cx="118" cy="186" rx="13" ry="14" fill="white"/>
+        <ellipse cx="83" cy="187" rx="9" ry="9" fill="#2e7d32"/>
+        <ellipse cx="119" cy="187" rx="9" ry="9" fill="#2e7d32"/>
+        <circle cx="86" cy="183" r="3" fill="white"/>
+        <circle cx="122" cy="183" r="3" fill="white"/>
+        <!-- Sourcils -->
+        <path d="M70,170 Q82,166 93,170" stroke="#6d4c41" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M107,170 Q118,166 130,170" stroke="#6d4c41" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Joues roses -->
+        <ellipse cx="72" cy="200" rx="10" ry="6" fill="#f48fb1" opacity="0.35"/>
+        <ellipse cx="128" cy="200" rx="10" ry="6" fill="#f48fb1" opacity="0.35"/>
+        <!-- Nez -->
+        <ellipse cx="100" cy="198" rx="4" ry="3" fill="#f0a090"/>
+        <!-- Bouche souriante -->
+        <path d="M86,212 Q100,224 114,212" stroke="#c62828" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Dents -->
+        <path d="M90,212 Q100,218 110,212" fill="white" opacity="0.6"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- TITLE SCREEN -->
+  <div id="title-screen">
+    <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none" id="title-petals"></div>
+    <div class="title-logo">
+      ✦ PIXEL<br>LITERATURE<br>CLUB ✦
+    </div>
+    <div class="title-sub">un roman visuel de mystère et de poésie</div>
+    <button class="start-btn" onclick="startGame()">[ COMMENCER ]</button>
+    <div class="title-warning">
+      AVERTISSEMENT : Ce jeu contient des éléments de métafiction et des thèmes psychologiques.<br>
+      Tous les personnages et événements sont fictifs.<br>
+      Ce jeu n'est pas destiné aux enfants.
+    </div>
+  </div>
+
+  <!-- POEM MINIGAME -->
+  <div id="poem-game">
+    <div class="poem-title">✦ ÉCRIRE UN POÈME ✦</div>
+    <p style="font-family:'Crimson Pro',serif;color:rgba(240,232,245,0.6);font-size:0.95rem;text-align:center;">
+      Choisissez des mots pour composer votre poème. Cliquez sur un mot pour l'ajouter.
+    </p>
+    <div class="word-pool" id="word-pool"></div>
+    <div class="poem-lines" id="poem-lines">
+      <div class="poem-line" id="line-0">_</div>
+      <div class="poem-line" id="line-1">_</div>
+      <div class="poem-line" id="line-2">_</div>
+    </div>
+    <button class="poem-submit" onclick="submitPoem()">SOUMETTRE LE POÈME ✦</button>
+  </div>
+
+  <!-- TEXTBOX -->
+  <div id="textbox-wrap">
+    <div id="textbox" onclick="advanceScene()">
+      <div id="nametag">???</div>
+      <div id="dialogue"><span id="dialogue-text"></span><span id="cursor">●</span></div>
+    </div>
+  </div>
+
+  <!-- CHOICES -->
+  <div id="choices"></div>
+
+  <!-- AFFECTION BARS -->
+  <div id="affection-bar">
+    <div class="aff-row">
+      <span class="aff-name">LYRA</span>
+      <div class="aff-track"><div class="aff-fill" id="aff-lyra" style="width:20%"></div></div>
+    </div>
+    <div class="aff-row">
+      <span class="aff-name">NAMI</span>
+      <div class="aff-track"><div class="aff-fill" id="aff-nami" style="width:20%"></div></div>
+    </div>
+    <div class="aff-row">
+      <span class="aff-name">MIRA</span>
+      <div class="aff-track"><div class="aff-fill" id="aff-mira" style="width:20%"></div></div>
+    </div>
+  </div>
+
+  <!-- UI BUTTONS -->
+  <div id="ui-top" style="display:none">
+    <button class="ui-btn" onclick="toggleAff()">STATS</button>
+    <button class="ui-btn" onclick="saveGame()">SAVE</button>
+    <button class="ui-btn" onclick="loadGame()">LOAD</button>
+    <button class="ui-btn" onclick="goTitle()">TITRE</button>
+  </div>
+
+  <!-- OVERLAYS -->
+  <div id="glitch-overlay"></div>
+  <div id="scanlines"></div>
+  <div id="static-noise"></div>
+  <div id="fade"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  PIXEL LITERATURE CLUB — ENGINE
+// ══════════════════════════════════════════════════════
+
+const CHARS = {
+  lyra: { el: document.getElementById('char-lyra'), nameEl: null },
+  nami: { el: document.getElementById('char-nami'), nameEl: null },
+  mira: { el: document.getElementById('char-mira'), nameEl: null },
+};
+
+const CHAR_COLORS = {
+  lyra: '#ce93d8',
+  nami: '#90caf9',
+  mira: '#a5d6a7',
+  narrator: 'rgba(240,232,245,0.5)',
+  system: '#ff1744',
+};
+
+const CHAR_NAMES = {
+  lyra: 'Lyra',
+  nami: 'Nami',
+  mira: 'Mira',
+  narrator: '',
+  system: '???',
+};
+
+let state = {
+  scene: 0,
+  affection: { lyra: 20, nami: 20, mira: 20 },
+  poemWords: [],
+  flags: {},
+  typing: false,
+  waitingChoice: false,
+  gameStarted: false,
+  savedScene: null,
+};
+
+let typeTimer = null;
+let currentText = '';
+let charIdx = 0;
+
+// ── SCENE DATA ──────────────────────────────────────────
+//
+//  PROPRIÉTÉS DISPONIBLES PAR SCÈNE :
+//  ─────────────────────────────────────────────────────
+//  bg         : fond CSS prédéfini — 'club' | 'classroom' | 'glitch' | 'void' | 'white'
+//  bgImage    : URL d'une image de fond (ex: 'https://i.postimg.cc/xxx/bg.jpg')
+//               Remplace/superpose le bg CSS. Les deux peuvent coexister.
+//
+//  show       : tableau des persos visibles — ex: ['lyra', 'nami']
+//  active     : perso mis en avant (couleur, glow) — ex: 'lyra'
+//  dimmed     : persos assombris/désaturés — ex: ['nami']
+//  hide       : persos à masquer explicitement — ex: ['mira']
+//
+//  charImage  : remplace le sprite SVG d'un perso par une image externe
+//               ex: { lyra: 'https://i.postimg.cc/xxx/lyra.png', nami: '...' }
+//               L'image doit être PNG avec fond transparent de préférence.
+//               Dimensions conseillées : 200×340px ou proportionnel.
+//
+//  name       : locuteur — 'lyra' | 'nami' | 'mira' | 'narrator' | 'system'
+//  text       : dialogue affiché (utilise des backticks ` ` pour les apostrophes)
+//
+//  type       : 'choice' | 'poem' (omis = scène normale)
+//  choices    : tableau de choix (si type:'choice')
+//               ex: [{ text: 'Option A', flag: 'flagA', aff: { lyra: 10 }, next: 5 }]
+//
+//  next       : index de la scène suivante (défaut = index+1)
+//  pause      : avance automatiquement après N ms
+//  scene      : identifiant de groupe (string libre, ex: 'club', 'jour2', 'horror')
+//               Les dialogues avec le MÊME identifiant s'enchaînent SANS fondu noir.
+//               Le fondu apparaît uniquement quand ce groupe CHANGE (ou avec transition:true).
+//               Exemple : toutes les répliques dans la salle du club → scene: 'club-day1'
+//               Puis quand on passe au lendemain → scene: 'club-day2'  → fondu automatique.
+//
+//  transition : force un fondu noir même si le groupe scene ne change pas
+//  glitch     : déclenche l'effet glitch visuel
+//  horror     : texte rouge corrompu + couleur nametag rouge
+//  noise      : active le bruit statique
+//  end        : marque la fin du jeu
+//  ─────────────────────────────────────────────────────
+//
+//  EXEMPLE AVEC IMAGES :
+//  {
+//    bgImage: 'https://i.postimg.cc/abc/classroom.jpg',
+//    charImage: { lyra: 'https://i.postimg.cc/xyz/lyra-happy.png' },
+//    show: ['lyra'], active: 'lyra',
+//    name: 'lyra', text: `Bonjour !`
+//  }
+//  ─────────────────────────────────────────────────────
+
+const SCENES = [
+
+  // ── JOUR 1 : COULOIR ─────────────────────────
+  // scene: 'jour1-couloir' → ces 5 répliques s'enchaînent sans fondu
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami'], active: 'nami', hide: ['lyra', 'mira'],
+    name: 'narrator',
+    text: `C'est ta première journée au Lycée Étoile du Soir. L'air sent la craie et la pluie froide.`,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami'], active: 'nami',
+    name: 'narrator',
+    text: `Sur le tableau, quelqu'un a écrit en petites lettres : "Bienvenue au Club de Littérature."`,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `Tu cherches quelque chose ? Ce couloir ne mène nulle part... sauf à notre club.`,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `Je suis Nami. Responsable de l'organisation et de la bibliothèque du club. ...`,
+    pause: 600,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `Ne te méprends pas — je ne t'invite pas. Je t'informe simplement de notre existence.`,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami', 'lyra'], active: 'lyra',
+    name: 'lyra',
+    text: `Nami ! Sois sympa !`,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami', 'lyra'], active: 'lyra',
+    name: 'lyra',
+    text: `Salut ! Moi c'est Lyra ✦ Bienvenue dans le couloir le plus hanté du lycée ! Haha—`,
+  },
+  {
+    scene: 'jour1-couloir',
+    bg: 'classroom',
+    show: ['nami', 'lyra'], active: 'nami', dimmed: ['lyra'],
+    name: 'nami',
+    text: `...Elle dit ça à tout le monde.`,
+  },
+
+  // ── JOUR 1 : SALLE DU CLUB ───────────────────
+  // scene: 'jour1-club' → fondu au changement depuis 'jour1-couloir'
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'lyra', dimmed: [],
+    name: 'lyra',
+    text: `Viens voir notre salle ! On se retrouve tous les jours après les cours pour lire et écrire.`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'mira',
+    name: 'mira',
+    text: `Oh ! Tu es le/la nouveau·lle ? Enchantée ! Je suis Mira — la cuisinière officielle du club !`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'mira',
+    name: 'mira',
+    text: `J'ai fait des petits gâteaux aujourd'hui — les fleurs de cerisier sont en pleine saison !`,
+  },
+  {
+    scene: 'jour1-club',
+    type: 'choice',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'],
+    name: 'narrator',
+    text: `Tu regardes les trois filles. Vers qui vas-tu te tourner en premier ?`,
+    choices: [
+      { text: `Parler à Lyra`, flag: 'chose_lyra', aff: { lyra: 15 }, next: 12 },
+      { text: `Parler à Nami`, flag: 'chose_nami', aff: { nami: 15 }, next: 15 },
+      { text: `Parler à Mira`, flag: 'chose_mira', aff: { mira: 15 }, next: 18 },
+    ],
+  },
+
+  // ── LYRA PATH (index 12) ─────────────────────
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra'], active: 'lyra', dimmed: [],
+    name: 'lyra',
+    text: `Vraiment ? Tu viens me parler d'abord ? Je suis... touchée, hehe.`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra'], active: 'lyra',
+    name: 'lyra',
+    text: `Tu sais, j'écris des poèmes. Des choses étranges... que personne ne comprend vraiment.`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra'], active: 'lyra',
+    name: 'lyra',
+    text: `J'ai l'impression parfois que mes mots... existent déjà quelque part. Que je fais juste semblant de les inventer.`,
+    next: 21,
+  },
+
+  // ── NAMI PATH (index 15) ─────────────────────
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `...Hm. Tu as bon goût, au moins.`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `Le club lit en ce moment "Le Château" de Kafka. Ça parle de quelqu'un qui cherche une destination qu'il ne peut jamais atteindre.`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `...Je me demande parfois si c'est différent d'ici.`,
+    next: 21,
+  },
+
+  // ── MIRA PATH (index 18) ─────────────────────
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['mira'], active: 'mira',
+    name: 'mira',
+    text: `Chouette ! Goûte ce macaron ! J'ai mis de la lavande dedans — c'est pour l'inspiration créatrice !`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['mira'], active: 'mira',
+    name: 'mira',
+    text: `Moi, j'écris des chansons. Des petites ritournelles qui restent dans la tête...`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['mira'], active: 'mira',
+    name: 'mira',
+    text: `Parfois elles viennent dans mes rêves. Et je me réveille en pleurant sans savoir pourquoi. C'est bizarre, non ?`,
+    next: 21,
+  },
+
+  // ── POÈME (index 21) ─────────────────────────
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'lyra',
+    name: 'lyra',
+    text: `Oh ! On devrait tous écrire un poème ensemble ! C'est la tradition du club pour les nouveaux membres.`,
+    next: 22,
+  },
+  {
+    scene: 'jour1-club',
+    type: 'poem',
+    name: 'narrator',
+    text: `C'est le moment d'écrire quelque chose...`,
+  },
+
+  // ── APRÈS POÈME (index 23) ───────────────────
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'mira',
+    name: 'mira',
+    text: `Oh ! C'est magnifique ! Tu as vraiment du talent !`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'nami', dimmed: ['mira'],
+    name: 'nami',
+    text: `...Intéressant. Les mots que tu as choisis révèlent beaucoup.`,
+    pause: 800,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: 'nami',
+    name: 'nami',
+    text: `Il y a quelque chose de... familier là-dedans. Comme si je l'avais déjà lu.`,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra'], active: 'lyra', dimmed: ['nami', 'mira'],
+    name: 'lyra',
+    text: `Tu reviendras demain, n'est-ce pas ? Le club a... besoin de toi.`,
+    pause: 500,
+  },
+  {
+    scene: 'jour1-club',
+    bg: 'club',
+    show: ['lyra'], active: 'lyra',
+    name: 'narrator',
+    text: `Quelque chose dans ses yeux ne va pas. Comme si une ombre passait derrière le sourire.`,
+  },
+
+  // ── JOUR 2 : SALLE (index 28) ────────────────
+  // scene: 'jour2-club' → fondu automatique depuis 'jour1-club'
+  {
+    scene: 'jour2-club',
+    bg: 'club',
+    show: ['lyra', 'nami', 'mira'], active: null,
+    name: 'narrator',
+    text: `Le lendemain. La salle du club semble... différente.`,
+  },
+  {
+    scene: 'jour2-club',
+    bg: 'club',
+    show: ['mira'], active: 'mira', hide: ['lyra', 'nami'],
+    name: 'mira',
+    text: `Ah, tu es là ! Nami dit qu'elle arrivera en retard. Et Lyra... Lyra n'est pas encore là.`,
+  },
+  {
+    scene: 'jour2-club',
+    bg: 'club',
+    show: ['mira'], active: 'mira',
+    name: 'mira',
+    text: `J'ai préparé du thé ! Et... attends, c'est quoi ce—`,
+    glitch: true,
+  },
+
+  // ── GLITCH HORROR (index 31) ─────────────────
+  // scene: 'glitch' → fondu depuis 'jour2-club'
+  {
+    scene: 'glitch',
+    bg: 'glitch',
+    show: [], active: null,
+    name: 'system',
+    text: `ERREUR : FICHIER PERSONNAGE CORROMPU`,
+    horror: true,
+  },
+  {
+    scene: 'glitch',
+    bg: 'glitch', show: [],
+    name: 'system',
+    text: `lyra_data.chr — INTROUVABLE`,
+    horror: true, noise: true,
+  },
+  {
+    scene: 'glitch',
+    bg: 'glitch', show: [],
+    name: 'system',
+    text: `Quelqu'un a modifié les fichiers. Ce n'était pas toi.`,
+    horror: true,
+  },
+  {
+    scene: 'glitch',
+    bg: 'glitch', show: [],
+    name: 'system',
+    text: `Tu vois ces lignes de texte ? Elles ne sont pas censées être là. Ni toi, d'ailleurs.`,
+    horror: true, noise: true,
+  },
+
+  // ── RETOUR SALLE (index 35) ──────────────────
+  // scene: 'jour2-apres' → fondu depuis 'glitch'
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami', hide: ['mira', 'lyra'],
+    name: 'nami',
+    text: `...`,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `Lyra n'est pas là. Elle n'est... nulle part. Je ne sais pas comment l'expliquer.`,
+    pause: 1000,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `Mais il y a une chose étrange. J'ai retrouvé un de ses poèmes dans mes affaires.`,
+    pause: 600,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `"Si tu lis ceci, c'est que j'ai réussi à sortir de la boucle. Ne cherche pas à comprendre. Continue."`,
+    pause: 400,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'nami',
+    text: `...Je crois que le club de littérature cache quelque chose. Et ce n'est pas dans les livres.`,
+  },
+
+  // ── CHOIX 2 (index 40) ───────────────────────
+  {
+    scene: 'jour2-apres',
+    type: 'choice',
+    bg: 'club',
+    show: ['nami'],
+    name: 'narrator',
+    text: `Que fais-tu ?`,
+    choices: [
+      { text: `Chercher des indices dans la salle`, flag: 'searched_room', aff: { nami: 10 }, next: 41 },
+      { text: `Demander à Mira ce qu'elle sait`, flag: 'asked_mira', aff: { mira: 10 }, next: 44 },
+      { text: `Lire le poème à voix haute`, flag: 'read_poem', aff: { lyra: 25 }, next: 47 },
+    ],
+  },
+
+  // ── INDICE (index 41) ────────────────────────
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: null, dimmed: ['nami'],
+    name: 'narrator',
+    text: `Tu fouilles la bibliothèque. Entre deux romans, tu trouves un cahier à spirales.`,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami', dimmed: [],
+    name: 'narrator',
+    text: `À l'intérieur : des pages et des pages de texte. La même phrase, encore et encore.`,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['nami'], active: 'nami',
+    name: 'narrator',
+    text: `"Je suis coincée ici depuis le début. Vous ne vous souvenez pas. Mais moi si."`,
+    next: 50,
+  },
+
+  // ── MIRA PATH 2 (index 44) ───────────────────
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['mira'], active: 'mira', hide: ['nami'],
+    name: 'mira',
+    text: `Moi ? Je... je ne sais rien. Vraiment. C'est juste que...`,
+    pause: 700,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['mira'], active: 'mira',
+    name: 'mira',
+    text: `Hier soir j'ai rêvé d'elle. Elle me disait de fermer les yeux et de compter jusqu'à dix.`,
+  },
+  {
+    scene: 'jour2-apres',
+    bg: 'club',
+    show: ['mira'], active: 'mira',
+    name: 'mira',
+    text: `Quand j'ai ouvert les yeux dans le rêve... la salle était vide. Et tout était en noir et blanc.`,
+    next: 50,
+  },
+
+  // ── POÈME À VOIX HAUTE (index 47) ────────────
+  // scene: 'void' → fondu depuis 'jour2-apres'
+  {
+    scene: 'void',
+    bg: 'void', show: [],
+    name: 'narrator',
+    text: `Tu lis à voix haute. Les mots semblent résonner d'une façon impossible pour une pièce si petite.`,
+  },
+  {
+    scene: 'void',
+    bg: 'void', show: [],
+    name: 'system',
+    text: `...`,
+    horror: true, pause: 1500,
+  },
+  {
+    scene: 'void',
+    bg: 'void', show: [],
+    name: 'system',
+    text: `Tu m'entends ? Je savais que tu trouverais ce poème.`,
+    horror: true,
+  },
+  {
+    scene: 'void',
+    bg: 'void', show: [],
+    name: 'system',
+    text: `Je m'appelle Lyra. Et je suis... ailleurs. Dans un endroit entre les scènes.`,
+    horror: true, next: 50,
+  },
+
+  // ── FIN ACTE 1 (index 50) ────────────────────
+  // scene: 'fin' → fondu depuis tout chemin précédent
+  {
+    scene: 'fin',
+    bg: 'club',
+    show: ['nami', 'mira'], active: null, dimmed: [],
+    name: 'narrator',
+    text: `Le soir tombe sur le lycée. Les néons de la salle clignotent une fois. Deux fois.`,
+  },
+  {
+    scene: 'fin',
+    bg: 'club',
+    show: ['nami', 'mira'], active: 'nami',
+    name: 'nami',
+    text: `Peu importe ce qui s'est passé... je suis contente que tu sois là.`,
+    pause: 500,
+  },
+  {
+    scene: 'fin',
+    bg: 'club',
+    show: ['nami', 'mira'], active: 'mira', dimmed: ['nami'],
+    name: 'mira',
+    text: `On se retrouve demain ? Le club... le club a besoin de continuer.`,
+  },
+  {
+    scene: 'fin',
+    bg: 'club',
+    show: ['nami', 'mira'], active: null, dimmed: [],
+    name: 'narrator',
+    text: `Tu hoches la tête. Quelque part dans les pages d'un roman que personne n'a encore lu...`,
+  },
+  {
+    scene: 'fin',
+    bg: 'void', show: [],
+    name: 'narrator',
+    text: `...une fille aux cheveux violets sourit dans le noir.`,
+  },
+  {
+    scene: 'fin',
+    bg: 'void', show: [],
+    name: 'system',
+    text: `FIN DE L'ACTE I`,
+    horror: false, end: true,
+  },
+];
+// ── POEM WORDS ───────────────────────────────────────
+
+const POEM_WORDS = [
+  'lumière','ombre','silence','rêve','pluie','étoile',
+  'miroir','temps','vide','page','encre','fissure',
+  'souvenir','couloir','boîte','vertige','boucle','nuit',
+  'fenêtre','fragment','cendre','racine','écho','spirale',
+];
+
+// ── ENGINE ───────────────────────────────────────────
+
+function startGame() {
+  fadeOut(() => {
+    document.getElementById('title-screen').style.display = 'none';
+    document.getElementById('ui-top').style.display = 'flex';
+    document.getElementById('affection-bar').style.display = 'flex';
+    state.gameStarted = true;
+    spawnTitlePetals();
+    playScene(0);
+    fadeIn();
+  });
+}
+
+function playScene(idx) {
+  if (idx >= SCENES.length) { showEnd(); return; }
+  state.scene = idx;
+
+  const s = SCENES[idx];
+  if (!s) { showEnd(); return; }
+
+  // Apply bg color/class
+  const bgEl = document.getElementById('bg');
+  const bgImg = document.getElementById('bg-img');
+  if (s.bgImage) {
+    // URL image — fade in over the color bg
+    bgImg.style.backgroundImage = `url('${s.bgImage}')`;
+    bgImg.classList.add('visible');
+    if (s.bg) bgEl.className = 'scene-' + s.bg;
+  } else if (s.bg) {
+    bgEl.className = 'scene-' + s.bg;
+    bgImg.classList.remove('visible');
+    // Don't clear backgroundImage immediately — let it fade out
+    setTimeout(() => { if (!bgImg.classList.contains('visible')) bgImg.style.backgroundImage = ''; }, 900);
+  }
+
+  // Static noise
+  const noise = document.getElementById('static-noise');
+  if (s.noise) noise.classList.add('show');
+  else noise.classList.remove('show');
+
+  // Characters
+  applyChars(s);
+
+  // Horror / glitch
+  if (s.glitch) triggerGlitch();
+  if (s.horror) {
+    document.getElementById('nametag').style.color = '#ff1744';
+  } else {
+    document.getElementById('nametag').style.color = CHAR_COLORS[s.name] || 'var(--pink)';
+  }
+
+  // Nametag
+  const nameTag = document.getElementById('nametag');
+  nameTag.textContent = CHAR_NAMES[s.name] || s.name || '';
+  if (!nameTag.textContent) nameTag.style.opacity = '0';
+  else nameTag.style.opacity = '1';
+
+  // Handle type
+  if (s.type === 'choice') {
+    showTextThenChoices(s);
+  } else if (s.type === 'poem') {
+    showTextThenPoem(s);
+  } else {
+    showText(s);
+  }
+
+  // End?
+  if (s.end) {
+    document.getElementById('cursor').classList.remove('show');
+    setTimeout(() => showEnd(), 3000);
+  }
+}
+
+function applyChars(s) {
+  const show = s.show || [];
+  const active = s.active;
+  const dimmed = s.dimmed || [];
+  const hide = s.hide || [];
+  // charImage: { lyra: 'url', nami: 'url', ... }  — override SVG with an image for this scene
+  const charImage = s.charImage || {};
+
+  ['lyra','nami','mira'].forEach(id => {
+    const el = CHARS[id].el;
+    if (!el) return;
+
+    // Handle image override: swap SVG ↔ img
+    const svgEl = el.querySelector('.char-svg');
+    let imgEl = el.querySelector('.char-img');
+
+    if (charImage[id]) {
+      // Show image, hide SVG
+      if (svgEl) svgEl.style.display = 'none';
+      if (!imgEl) {
+        imgEl = document.createElement('img');
+        imgEl.className = 'char-img';
+        el.insertBefore(imgEl, el.firstChild);
+      }
+      imgEl.src = charImage[id];
+      imgEl.style.display = 'block';
+    } else {
+      // Show SVG, hide/remove img
+      if (svgEl) svgEl.style.display = '';
+      if (imgEl) imgEl.style.display = 'none';
+    }
+
+    if (hide.includes(id)) {
+      el.classList.remove('visible','active','dimmed','glitch-mode');
+      el.classList.add('hidden');
+    } else if (show.includes(id)) {
+      el.classList.remove('hidden');
+      el.classList.add('visible');
+      if (id === active) {
+        el.classList.add('active');
+        el.classList.remove('dimmed');
+      } else if (dimmed.includes(id)) {
+        el.classList.remove('active');
+        el.classList.add('dimmed');
+      } else {
+        el.classList.remove('active','dimmed');
+      }
+    } else {
+      el.classList.remove('visible','active','dimmed');
+      el.classList.add('hidden');
+    }
+  });
+}
+
+function showText(s) {
+  const el = document.getElementById('dialogue-text');
+  const cur = document.getElementById('cursor');
+  cur.classList.remove('show');
+  state.typing = true;
+  state.waitingChoice = false;
+
+  const textEl = document.getElementById('textbox');
+  textEl.style.display = 'block';
+
+  if (s.horror) {
+    el.className = 'corrupted-text';
+  } else {
+    el.className = '';
+  }
+
+  typeText(s.text, () => {
+    state.typing = false;
+    if (!s.end) cur.classList.add('show');
+    if (s.pause) {
+      setTimeout(() => {
+        cur.classList.remove('show');
+        advanceByNext(s);
+      }, s.pause);
+    }
+  });
+}
+
+function showTextThenChoices(s) {
+  showText(s);
+  state.waitingChoice = true;
+  setTimeout(() => {
+    showChoices(s.choices);
+  }, s.text.length * 30 + 400);
+}
+
+function showTextThenPoem(s) {
+  showText(s);
+  setTimeout(() => {
+    openPoemGame();
+  }, s.text.length * 28 + 600);
+}
+
+function typeText(text, cb) {
+  clearTimeout(typeTimer);
+  const el = document.getElementById('dialogue-text');
+  el.textContent = '';
+  charIdx = 0;
+  currentText = text;
+
+  function tick() {
+    if (charIdx >= currentText.length) { cb && cb(); return; }
+    el.textContent += currentText[charIdx];
+    charIdx++;
+    const delay = currentText[charIdx-1] === '.' ? 55
+                : currentText[charIdx-1] === ',' ? 40
+                : currentText[charIdx-1] === '?' ? 55
+                : 22;
+    typeTimer = setTimeout(tick, delay);
+  }
+  tick();
+}
+
+function advanceScene() {
+  if (!state.gameStarted) return;
+  if (state.waitingChoice) return;
+
+  if (state.typing) {
+    // Skip typing
+    clearTimeout(typeTimer);
+    document.getElementById('dialogue-text').textContent = currentText;
+    state.typing = false;
+    document.getElementById('cursor').classList.add('show');
+    return;
+  }
+
+  const s = SCENES[state.scene];
+  if (s && s.end) return;
+  if (s && s.pause) return;
+  advanceByNext(s);
+}
+
+function advanceByNext(s) {
+  if (!s) return;
+  const next = s.next !== undefined ? s.next : state.scene + 1;
+  const nextScene = SCENES[next];
+  if (!nextScene) { showEnd(); return; }
+
+  // Fondu seulement si : transition explicite OU changement de groupe de scène
+  const currentGroup = s.scene || null;
+  const nextGroup = nextScene.scene || null;
+  const needsFade = nextScene.transition || (currentGroup !== nextGroup && (currentGroup !== null || nextGroup !== null));
+
+  if (needsFade) {
+    fadeOut(() => { playScene(next); fadeIn(); });
+  } else {
+    playScene(next);
+  }
+}
+
+function showChoices(choices) {
+  const container = document.getElementById('choices');
+  container.innerHTML = '';
+  container.style.display = 'flex';
+  state.waitingChoice = true;
+
+  choices.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c.text;
+    btn.onclick = () => {
+      if (c.flag) state.flags[c.flag] = true;
+      if (c.aff) {
+        Object.entries(c.aff).forEach(([k, v]) => {
+          state.affection[k] = Math.min(100, (state.affection[k] || 0) + v);
+          updateAffBar(k);
+        });
+      }
+      container.style.display = 'none';
+      state.waitingChoice = false;
+      const currentS = SCENES[state.scene];
+      const nextS = SCENES[c.next];
+      const needsFade = !nextS || !currentS || nextS.transition ||
+        ((currentS.scene || null) !== (nextS.scene || null) && (currentS.scene || nextS.scene));
+      if (needsFade) {
+        fadeOut(() => { playScene(c.next); fadeIn(); });
+      } else {
+        playScene(c.next);
+      }
+    };
+    container.appendChild(btn);
+  });
+}
+
+function updateAffBar(char) {
+  const el = document.getElementById('aff-' + char);
+  if (el) el.style.width = state.affection[char] + '%';
+}
+
+// ── POEM GAME ────────────────────────────────────────
+
+let poemSlots = [[], [], []];
+let currentLine = 0;
+
+function openPoemGame() {
+  const pg = document.getElementById('poem-game');
+  pg.classList.add('show');
+  document.getElementById('textbox-wrap').style.display = 'none';
+
+  poemSlots = [[], [], []];
+  currentLine = 0;
+
+  const pool = document.getElementById('word-pool');
+  pool.innerHTML = '';
+  const shuffled = [...POEM_WORDS].sort(() => Math.random() - 0.5).slice(0, 16);
+
+  shuffled.forEach(w => {
+    const chip = document.createElement('button');
+    chip.className = 'word-chip';
+    chip.textContent = w;
+    chip.onclick = () => addWord(chip, w);
+    pool.appendChild(chip);
+  });
+
+  updatePoemDisplay();
+}
+
+function addWord(chip, word) {
+  if (chip.classList.contains('used')) return;
+  chip.classList.add('used');
+
+  poemSlots[currentLine].push(word);
+  if (poemSlots[currentLine].length >= 4) currentLine = Math.min(2, currentLine + 1);
+
+  updatePoemDisplay();
+}
+
+function updatePoemDisplay() {
+  for (let i = 0; i < 3; i++) {
+    const line = document.getElementById('line-' + i);
+    if (!line) continue;
+    if (poemSlots[i].length === 0) {
+      line.innerHTML = '<span style="color:rgba(240,232,245,0.2);font-style:italic">—</span>';
+    } else {
+      line.innerHTML = poemSlots[i].map(w =>
+        `<span class="poem-word-placed" onclick="removeWord('${w}', ${i})">${w}</span>`
+      ).join(' ');
+    }
+  }
+}
+
+function removeWord(word, lineIdx) {
+  const idx = poemSlots[lineIdx].indexOf(word);
+  if (idx > -1) poemSlots[lineIdx].splice(idx, 1);
+
+  // Re-enable chip
+  document.querySelectorAll('.word-chip').forEach(c => {
+    if (c.textContent === word && c.classList.contains('used')) {
+      c.classList.remove('used');
+    }
+  });
+  updatePoemDisplay();
+}
+
+function submitPoem() {
+  const total = poemSlots.flat().length;
+  if (total < 3) {
+    alert('Ajoute au moins 3 mots à ton poème !');
+    return;
+  }
+
+  state.poemWords = poemSlots.flat();
+  document.getElementById('poem-game').classList.remove('show');
+  document.getElementById('textbox-wrap').style.display = 'block';
+
+  // Bonus affection selon les mots
+  const darkness = ['ombre','vide','fissure','boucle','cendre','vertige','écho'];
+  const light = ['lumière','étoile','rêve','souvenir','racine'];
+  let darkCount = poemSlots.flat().filter(w => darkness.includes(w)).length;
+  let lightCount = poemSlots.flat().filter(w => light.includes(w)).length;
+
+  if (darkCount > lightCount) state.affection.lyra += 10;
+  else if (lightCount > darkCount) state.affection.mira += 10;
+  else state.affection.nami += 10;
+
+  ['lyra','nami','mira'].forEach(updateAffBar);
+  fadeOut(() => { playScene(23); fadeIn(); });
+}
+
+// ── EFFECTS ─────────────────────────────────────────
+
+function triggerGlitch() {
+  const g = document.getElementById('glitch-overlay');
+  g.classList.remove('active');
+  void g.offsetWidth;
+  g.classList.add('active');
+  setTimeout(() => g.classList.remove('active'), 700);
+}
+
+function fadeOut(cb) {
+  const f = document.getElementById('fade');
+  f.classList.add('in');
+  setTimeout(() => { cb && cb(); }, 500);
+}
+
+function fadeIn() {
+  const f = document.getElementById('fade');
+  setTimeout(() => f.classList.remove('in'), 50);
+}
+
+function showEnd() {
+  fadeOut(() => {
+    document.getElementById('textbox-wrap').style.display = 'none';
+    document.getElementById('chars').innerHTML = '';
+
+    const bg = document.getElementById('bg');
+    bg.className = 'scene-void';
+
+    document.getElementById('dialogue-text').textContent = '';
+    document.getElementById('nametag').textContent = '';
+
+    const endDiv = document.createElement('div');
+    endDiv.style.cssText = `
+      position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:1.5rem;
+      font-family:'VT323',monospace; text-align:center; padding:2rem;
+    `;
+
+    endDiv.innerHTML = `
+      <div style="font-size:clamp(1.5rem,4vw,2.5rem);color:var(--pink);letter-spacing:0.2em;animation:titlePulse 3s infinite">
+        ✦ FIN DE L'ACTE I ✦
+      </div>
+      <div style="font-family:'Crimson Pro',serif;font-style:italic;color:rgba(240,232,245,0.6);font-size:1.1rem;max-width:500px;line-height:1.8">
+        Quelque part, Lyra attend dans les pages d'un roman inachevé.<br>
+        Le club de littérature a encore des secrets à révéler.
+      </div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:rgba(255,255,255,0.2);margin-top:1rem">
+        AFFECTION FINALE : 
+        LYRA ${state.affection.lyra}% · 
+        NAMI ${state.affection.nami}% · 
+        MIRA ${state.affection.mira}%
+      </div>
+      <button class="start-btn" style="margin-top:1rem" onclick="location.reload()">[ RECOMMENCER ]</button>
+    `;
+
+    document.getElementById('game').appendChild(endDiv);
+    fadeIn();
+  });
+}
+
+// ── TITLE PETALS ────────────────────────────────────
+
+function spawnTitlePetals() {
+  const container = document.getElementById('bg-deco');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'cherry-petal';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (4 + Math.random() * 5) + 's';
+    p.style.animationDelay = (Math.random() * 6) + 's';
+    p.style.transform = `rotate(${Math.random()*360}deg)`;
+    p.style.opacity = (0.4 + Math.random() * 0.4).toString();
+    container.appendChild(p);
+  }
+}
+
+function spawnTitlePetalsTitle() {
+  const c = document.getElementById('title-petals');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'cherry-petal';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (5 + Math.random() * 6) + 's';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    c.appendChild(p);
+  }
+}
+
+// ── SAVE / LOAD ─────────────────────────────────────
+
+function saveGame() {
+  try {
+    localStorage.setItem('plc_save', JSON.stringify({
+      scene: state.scene,
+      affection: state.affection,
+      flags: state.flags,
+    }));
+    flashMsg('SAUVEGARDÉ');
+  } catch(e) { flashMsg('ERREUR SAVE'); }
+}
+
+function loadGame() {
+  try {
+    const s = JSON.parse(localStorage.getItem('plc_save'));
+    if (!s) { flashMsg('AUCUNE SAUVEGARDE'); return; }
+    state.scene = s.scene;
+    state.affection = s.affection;
+    state.flags = s.flags;
+    ['lyra','nami','mira'].forEach(updateAffBar);
+    fadeOut(() => { playScene(state.scene); fadeIn(); });
+    flashMsg('CHARGÉ');
+  } catch(e) { flashMsg('ERREUR LOAD'); }
+}
+
+function goTitle() {
+  fadeOut(() => {
+    document.getElementById('title-screen').style.display = 'flex';
+    ['lyra','nami','mira'].forEach(id => {
+      CHARS[id].el.classList.remove('visible','active','dimmed');
+      CHARS[id].el.classList.add('hidden');
+    });
+    fadeIn();
+  });
+}
+
+function toggleAff() {
+  const bar = document.getElementById('affection-bar');
+  bar.style.display = bar.style.display === 'none' ? 'flex' : 'none';
+}
+
+function flashMsg(msg) {
+  const d = document.createElement('div');
+  d.textContent = msg;
+  d.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:'VT323',monospace;font-size:1.8rem;color:var(--pink);
+    background:rgba(8,4,14,0.9);border:1px solid rgba(244,143,177,0.4);
+    padding:0.6rem 1.5rem;z-index:999;letter-spacing:0.15em;
+    animation:titlePulse 0.4s;pointer-events:none`;
+  document.body.appendChild(d);
+  setTimeout(() => d.remove(), 1200);
+}
+
+// ── KEYBOARD ─────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (!state.gameStarted) {
+    if (e.key === 'Enter' || e.key === ' ') startGame();
+    return;
+  }
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') advanceScene();
+  if (e.key === 's' || e.key === 'S') saveGame();
+  if (e.key === 'l' || e.key === 'L') loadGame();
+});
+
+// ── INIT ─────────────────────────────────────────────
+
+spawnTitlePetalsTitle();
+</script>
+</body>
+</html>
