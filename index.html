@@ -64,39 +64,6 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .tool-btn{padding:.35rem .85rem;font-size:.75rem;font-family:inherit;background:var(--panel);color:var(--muted);border:1px solid var(--border);border-radius:20px;cursor:pointer;backdrop-filter:blur(12px);transition:color .2s,border-color .2s;}
 .tool-btn:hover,.tool-btn.active{color:var(--accent);border-color:var(--accent2)}
 
-/* ── JAUGE D'AFFINITÉ (1 seul personnage) ── */
-#affinity-panel{
-  position:fixed;top:58px;right:14px;
-  display:flex;flex-direction:column;gap:6px;
-  z-index:19;
-  min-width:160px;
-}
-.aff-row{
-  display:flex;align-items:center;gap:7px;
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:.28rem .75rem .28rem .6rem;
-  backdrop-filter:blur(12px);
-}
-.aff-heart{font-size:.85rem;line-height:1;}
-.aff-name{font-size:.72rem;color:var(--muted);min-width:38px;}
-.aff-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;}
-.aff-bar{height:100%;border-radius:99px;transition:width .5s ease,background .5s ease;}
-.aff-val{font-size:.7rem;color:var(--muted);min-width:22px;text-align:right;}
-
-/* notification affinité */
-#aff-toast{
-  position:fixed;bottom:180px;left:50%;transform:translateX(-50%);
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:30px;padding:.4rem 1.1rem;
-  font-size:.82rem;color:var(--name);
-  opacity:0;pointer-events:none;
-  transition:opacity .3s;
-  z-index:30;white-space:nowrap;
-}
-#aff-toast.show{opacity:1}
-
 /* ── LOG ── */
 #log-panel{position:fixed;inset:0;z-index:50;background:rgba(8,6,20,.96);backdrop-filter:blur(22px);display:flex;flex-direction:column;animation:fadeUp .2s ease both;}
 #log-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--border);font-family:Georgia,serif;font-size:1rem;color:var(--name);}
@@ -109,59 +76,31 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
 .log-name{font-size:.82rem;color:var(--name);font-weight:600}
 .log-line{font-size:.93rem;color:var(--muted);line-height:1.65}
 
-/* ── ÉCRAN RÉCAPITULATIF (arbre de branches) ── */
-#summary-screen{
+/* ── ÉCRAN DE FIN SIMPLE ── */
+#end-screen{
   position:fixed;inset:0;z-index:100;
   background:rgba(6,5,14,.97);backdrop-filter:blur(24px);
-  display:flex;flex-direction:column;align-items:center;
-  padding:2.2rem 1.2rem 1.6rem;
-  overflow-y:auto;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1.2rem;
+  text-align:center;
   animation:fadeUp .35s ease both;
 }
-#summary-title{
-  font-family:Georgia,serif;font-size:clamp(1.4rem,4vw,2rem);
-  color:var(--name);letter-spacing:.08em;margin-bottom:.3rem;text-align:center;
+#end-title{
+  font-family:Georgia,serif;font-size:clamp(1.4rem,4vw,2.2rem);
+  color:var(--name);letter-spacing:.08em;margin-bottom:1rem;
 }
-#summary-subtitle{
-  font-size:.85rem;color:var(--muted);letter-spacing:.12em;
-  text-transform:uppercase;margin-bottom:1.6rem;text-align:center;
+#end-desc{
+  font-size:.95rem;color:var(--muted);line-height:1.8;
+  max-width:520px;margin-bottom:2rem;
 }
-#summary-tree-wrap{
-  width:min(960px,96vw);
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:1.2rem;
-  margin-bottom:1.4rem;
-}
-#summary-tree{width:100%;height:auto;display:block;}
-#summary-ending-box{
-  width:min(640px,94vw);
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:1.2rem 1.4rem;
-  text-align:center;
-  margin-bottom:1.6rem;
-}
-#summary-ending-name{
-  font-family:Georgia,serif;font-size:1.2rem;color:var(--name);
-  letter-spacing:.06em;margin-bottom:.5rem;
-}
-#summary-ending-desc{
-  font-size:.9rem;color:var(--muted);line-height:1.7;
-}
-#summary-ending-aff{
-  font-size:.8rem;color:var(--accent);margin-top:.6rem;letter-spacing:.06em;
-}
-#btn-summary-continue{
+#btn-end-restart{
   padding:.7rem 2.4rem;font-size:.85rem;font-family:inherit;
   letter-spacing:.14em;text-transform:uppercase;
   background:transparent;color:var(--accent);
   border:1px solid var(--accent2);border-radius:40px;cursor:pointer;
   transition:background .25s,color .25s,box-shadow .25s;
 }
-#btn-summary-continue:hover{color:#fff;box-shadow:0 0 28px rgba(140,100,255,.35);background:var(--accent2);}
+#btn-end-restart:hover{color:#fff;box-shadow:0 0 28px rgba(140,100,255,.35);background:var(--accent2);}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -202,99 +141,64 @@ body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(
     <button class="tool-btn" id="btn-save">💾 Save</button>
     <button class="tool-btn" id="btn-load">📂 Load</button>
   </div>
-  <!-- Jauge d'affinité (générée dynamiquement) -->
-  <div id="affinity-panel"></div>
-  <!-- Toast notification -->
-  <div id="aff-toast"></div>
   <div id="log-panel" class="hidden">
     <div id="log-header"><span>Journal</span><button id="btn-close-log">✕</button></div>
     <div id="log-entries"></div>
   </div>
 </div>
 
-<!-- ÉCRAN RÉCAPITULATIF (arbre des choix) -->
-<div id="summary-screen" class="hidden">
-  <h1 id="summary-title">Bilan du chapitre</h1>
-  <p id="summary-subtitle">Le chemin que vous avez emprunté</p>
-  <div id="summary-tree-wrap">
-    <svg id="summary-tree" viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg"></svg>
-  </div>
-  <div id="summary-ending-box">
-    <div id="summary-ending-name"></div>
-    <div id="summary-ending-desc"></div>
-    <div id="summary-ending-aff"></div>
-  </div>
-  <button id="btn-summary-continue"><span>Recommencer</span></button>
+<!-- ÉCRAN DE FIN -->
+<div id="end-screen" class="hidden">
+  <h1 id="end-title"></h1>
+  <p id="end-desc"></p>
+  <button id="btn-end-restart"><span>Recommencer</span></button>
 </div>
 
 <script>
 // ════════════════════════════════════════════════════════════
-//  CONFIGURATION DU PERSONNAGE & DE L'AFFINITÉ
-// ════════════════════════════════════════════════════════════
-const CHARACTERS = {
-  Lou: { label:"Lou", heart:"♥", min:0, max:100, start:50 },
-};
-
-// ════════════════════════════════════════════════════════════
-//  DÉFINITION DES FINS (5 fins possibles)
-//
-//  Chaque fin est identifiée par une clé. On y associe :
-//  - titre affiché dans le bilan
-//  - description (sans glorifier la dynamique)
-//  - seuil d'affinité associé (pour info/affichage)
-// ════════════════════════════════════════════════════════════
-const ENDINGS = {
-  emprise: {
-    title:"Le cercle se resserre",
-    desc:"Chaque concession a renforcé l'emprise de Lou. Le calme revenu n'est qu'une pause avant le prochain reproche.",
-  },
-  fusion: {
-    title:"La fusion totale",
-    desc:"Vous avez cédé sur tout, jusqu'à ne plus distinguer vos propres limites de celles que Lou vous impose.",
-  },
-  tension: {
-    title:"Trêve fragile",
-    desc:"Rien n'est résolu. La même dispute attend simplement son heure, prête à ressurgir au moindre prétexte.",
-  },
-  conflit: {
-    title:"La dispute éclate",
-    desc:"Le silence qui suit n'est pas un répit : c'est l'attente du prochain affrontement, un peu plus violent que le précédent.",
-  },
-  rupture: {
-    title:"La porte qui se ferme",
-    desc:"Pour la première fois, vous avez tenu votre position jusqu'au bout. Ce n'est pas la fin de la difficulté — mais c'est un autre chemin qui commence.",
-  },
-};
-
-// ════════════════════════════════════════════════════════════
 //  SCÉNARIO — « Cercle Vicieux »
 //
-//  Histoire d'un couple à la dynamique toxique. La jauge
-//  d'affinité représente l'attachement émotionnel du joueur
-//  envers Lou — pas un indicateur de relation "saine".
+//  Plus de jauge d'affinité : la suite de l'histoire est
+//  déterminée UNIQUEMENT par les choix narratifs (chaque choix
+//  pointe directement vers la scène suivante via "next").
 //
-//  NOUVEAU : un narrateur extérieur (character:"Narrateur-ext")
-//  commente froidement certains moments, en contraste avec le
-//  vécu immédiat du joueur. Il est stylé différemment (italique,
-//  couleur grise/neutre) via la classe "narrator-mode".
+//  Deux types de choix, librement mélangeables :
+//
+//  1) CHOIX "RÉACTION" (sans impact structurel)
+//     → toutes les options pointent vers la MÊME scène suivante,
+//       mais chacune peut déclencher une petite réaction
+//       différente avant de converger. Utile pour donner de
+//       l'agentivité sans complexifier l'arborescence.
+//
+//     Exemple :
+//     { id:"X", type:"choice", choices:[
+//         { label:"Option A", next:"reaction_a" },
+//         { label:"Option B", next:"reaction_b" },
+//       ] }
+//     → "reaction_a" et "reaction_b" sont de courtes scènes
+//       distinctes qui ENCHAÎNENT ensuite vers la même scène
+//       commune (ex: les deux ont next:"suite_commune").
+//
+//  2) CHOIX "BRANCHE" (structurel)
+//     → chaque option mène à une scène ou un fil narratif
+//       réellement différent, qui peut lui-même continuer
+//       différemment ou converger plus tard.
+//
+//     Exemple :
+//     { id:"Y", type:"choice", choices:[
+//         { label:"Option A", next:"branche_a_1" },
+//         { label:"Option B", next:"branche_b_1" },
+//       ] }
 //
 //  ── DIALOGUE ──
 //  { id, type:"dialogue", character, image, background, text }
-//  → character:"Narrateur-ext" active le style narrateur
-//
-//  ── CHOIX ──
-//  { id, type:"choice", choices:[{label,next,affinity:{Lou:+-N}}] }
-//
-//  ── CONDITION ──
-//  { id, type:"condition", check:"Lou", branches:[
-//      {min:80, next:"..."}, {min:60, next:"..."}, ... , {min:0,next:"..."}
-//    ] }
-//    → on prend la première branche dont min <= valeur actuelle,
-//      en testant dans l'ordre décroissant.
+//  → character:"Narrateur-ext" active le style "narrateur
+//    extérieur" (italique, gris, en retrait du récit).
 //
 //  ── FIN ──
-//  { id, type:"ending", ending:"clé_dans_ENDINGS",
-//    character, image, background, text }
+//  { id, type:"end", title, desc }
+//  → affiche l'écran de fin avec titre + description, puis
+//    propose de recommencer.
 // ════════════════════════════════════════════════════════════
 
 const story = [
@@ -312,7 +216,7 @@ const story = [
     text:"Ce schéma vous est familier. Le message arrive toujours après un silence — jamais avant."
   },
 
-  // ── SCÈNE 1 — Retrouvailles intenses ────────────────────
+  // ── SCÈNE 1 — Retrouvailles ──────────────────────────────
   {
     id:"lou_arrive", type:"dialogue",
     character:"Lou",
@@ -333,181 +237,171 @@ const story = [
     text:"« Personne ne me comprend comme toi. » La phrase est douce. Elle a aussi pour effet de rétrécir le monde à une seule personne."
   },
 
-  // ── CHOIX 1 — affecte l'affinité ─────────────────────────
+  // ── CHOIX 1 : RÉACTION (sans impact structurel) ──────────
+  //  Les trois options donnent une réaction différente,
+  //  puis convergent vers "lou_propose_sortie".
   {
-    id:"choix_1", type:"choice",
+    id:"choix_reaction_1", type:"choice",
     choices:[
-      { label:"« Pardon… je vais faire attention, promis. »", next:"apres_choix_1", affinity:{ Lou:+15 } },
-      { label:"« Je ne te dois pas d'explication pour chaque silence. »", next:"apres_choix_1", affinity:{ Lou:-15 } },
-      { label:"« Désolé, j'étais occupé, c'est tout. »", next:"apres_choix_1", affinity:{ Lou:+3 } },
+      { label:"« Pardon… je vais faire attention. »", next:"reac_excuse" },
+      { label:"« Je ne te dois pas d'explication pour chaque silence. »", next:"reac_recul" },
+      { label:"« Désolé, j'étais occupé, c'est tout. »", next:"reac_neutre" },
     ]
   },
-
   {
-    id:"apres_choix_1", type:"dialogue",
+    id:"reac_excuse", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"",
+    text:"C'est tout ce que je voulais entendre. Tu vois, c'est pas compliqué."
+  },
+  {
+    id:"reac_recul", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"",
+    text:"(Un silence. Puis, plus bas :)\nOk, ok. J'exagère peut-être un peu, parfois."
+  },
+  {
+    id:"reac_neutre", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"",
+    text:"Occupé. Ouais. Bon, peu importe."
+  },
+  {
+    id:"narrateur_apres_choix1", type:"dialogue",
     character:"Narrateur-ext", image:"", background:"",
-    text:"Une réponse, et déjà la tonalité de toute la soirée vient de se décider."
+    text:"Quelle que soit la réponse, la soirée continue. C'est souvent ainsi : la tension retombe, sans jamais vraiment se résoudre."
   },
 
-  // ── DEUXIÈME TEMPS — accentue ou tempère la dynamique ────
+  // ── SCÈNE COMMUNE — Lou propose de se voir ───────────────
   {
-    id:"lou_second_temps", type:"dialogue",
+    id:"lou_propose_sortie", type:"dialogue",
     character:"Lou",
     image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
     background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
-    text:"De toute façon, tu sais que je dis ça parce que je tiens à toi. Personne ne tiendrait à toi comme moi."
+    text:"Bon. Tu fais quoi ce soir ? Viens, on va prendre l'air, ça nous fera du bien à tous les deux."
   },
   {
-    id:"choix_2", type:"choice",
+    id:"narrateur_2", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"« Ça nous fera du bien. » Une proposition qui ressemble à une question, mais qui n'en est pas vraiment une."
+  },
+
+  // ── CHOIX 2 : BRANCHE STRUCTURELLE ───────────────────────
+  //  Deux fils narratifs réellement différents.
+  {
+    id:"choix_branche_1", type:"choice",
     choices:[
-      { label:"« Je sais, et moi aussi je tiens à toi. »", next:"resolution", affinity:{ Lou:+20 } },
-      { label:"« Tu dis ça à chaque fois qu'on se dispute. »", next:"resolution", affinity:{ Lou:-20 } },
-      { label:"Rester silencieux.", next:"resolution", affinity:{ Lou:-5 } },
+      { label:"« D'accord, je te rejoins. »", next:"branche_accepte_1" },
+      { label:"« Pas ce soir, je suis épuisé(e). »", next:"branche_refuse_1" },
     ]
   },
 
-  // ── RÉSOLUTION : branchement selon affinité cumulée ──────
-  //  5 paliers → 5 fins
-  //  80-100 : fusion totale
-  //  60-79  : emprise qui se resserre
-  //  40-59  : trêve fragile
-  //  20-39  : la dispute éclate
-  //  0-19   : rupture
+  // ═══ FIL A : "j'accepte" ═══
   {
-    id:"resolution", type:"condition",
-    check:"Lou",
-    branches:[
-      { min:80, next:"fin_fusion"  },
-      { min:60, next:"fin_emprise" },
-      { min:40, next:"fin_tension" },
-      { min:20, next:"fin_conflit" },
-      { min:0,  next:"fin_rupture" },
-    ]
-  },
-
-  // ── FIN 1 : FUSION TOTALE (80-100) ───────────────────────
-  {
-    id:"narrateur_fusion", type:"dialogue",
-    character:"Narrateur-ext", image:"", background:"",
-    text:"Vous avez dit oui à tout. Chaque fois. Ce soir, Lou dort apaisé. Vous, beaucoup moins."
-  },
-  {
-    id:"fin_fusion", type:"ending", ending:"fusion",
+    id:"branche_accepte_1", type:"dialogue",
     character:"Lou",
     image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
     background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
-    text:"Tu vois ? Quand tu es comme ça, tout est parfait entre nous. Ne change jamais, d'accord ?\n\n— FIN DU CHAPITRE 1 —"
-  },
-
-  // ── FIN 2 : EMPRISE (60-79) ───────────────────────────────
-  {
-    id:"narrateur_emprise", type:"dialogue",
-    character:"Narrateur-ext", image:"", background:"",
-    text:"Vous avez cédé l'essentiel, tout en gardant l'impression de garder un peu de terrain. Lou aussi a cette impression — la sienne."
+    text:"Voilà, c'est ça que j'aime entendre. On se retrouve dans une heure ?"
   },
   {
-    id:"fin_emprise", type:"ending", ending:"emprise",
-    character:"Lou",
-    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
-    text:"…Merci de comprendre. C'est pour ça qu'on est différents des autres couples.\n\nViens là. On oublie tout ça. Juste toi et moi, comme d'habitude.\n\n— FIN DU CHAPITRE 1 —"
-  },
-
-  // ── FIN 3 : TRÊVE FRAGILE (40-59) ─────────────────────────
-  {
-    id:"narrateur_tension", type:"dialogue",
-    character:"Narrateur-ext", image:"", background:"",
-    text:"Ni vous ni Lou n'avez vraiment cédé. Le sujet est simplement remis à plus tard — comme toujours."
-  },
-  {
-    id:"fin_tension", type:"ending", ending:"tension",
-    character:"Lou",
-    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
-    text:"Mouais. Si tu veux. On verra si tu dis pareil la prochaine fois.\n\n(Un silence pesant s'installe entre vous.)\n\n— FIN DU CHAPITRE 1 —"
-  },
-
-  // ── FIN 4 : CONFLIT (20-39) ────────────────────────────────
-  {
-    id:"narrateur_conflit", type:"dialogue",
-    character:"Narrateur-ext", image:"", background:"",
-    text:"Vous avez résisté plus que d'habitude. Lou ne sait pas encore comment réagir face à ça — alors la colère monte."
-  },
-  {
-    id:"fin_conflit", type:"ending", ending:"conflit",
-    character:"Lou",
-    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
-    text:"Ah, super. Donc c'est comme ça maintenant.\n\nTu sais quoi, fais comme tu veux. Mais ne viens pas pleurer quand il n'y aura plus personne.\n\n— FIN DU CHAPITRE 1 —"
-  },
-
-  // ── FIN 5 : RUPTURE (0-19) ─────────────────────────────────
-  {
-    id:"narrateur_rupture", type:"dialogue",
-    character:"Narrateur-ext", image:"", background:"",
-    text:"Pour la première fois ce soir, vous n'avez rien cédé. Le silence qui suit n'est pas confortable. Mais il vous appartient."
-  },
-  {
-    id:"fin_rupture", type:"ending", ending:"rupture",
+    id:"branche_accepte_2", type:"dialogue",
     character:"", image:"",
-    background:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1280&q=80",
-    text:"Aucune réponse de Lou ce soir-là.\n\nPour une fois, le silence est le vôtre.\n\n— FIN DU CHAPITRE 1 —"
+    background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
+    text:"Le café est presque vide à cette heure. Lou est déjà là, un sourire chaleureux aux lèvres — comme si rien ne s'était passé plus tôt."
+  },
+  {
+    id:"branche_accepte_3", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
+    text:"Tu vois, c'est ça qui me plaît avec toi. T'es la seule personne avec qui je me sens vraiment moi-même."
+  },
+
+  // Choix réaction (sans impact) à l'intérieur du fil A
+  {
+    id:"choix_reaction_2", type:"choice",
+    choices:[
+      { label:"Sourire et la laisser parler.", next:"reac2_sourire" },
+      { label:"Demander comment s'est passée sa journée.", next:"reac2_question" },
+    ]
+  },
+  {
+    id:"reac2_sourire", type:"dialogue",
+    character:"", image:"", background:"",
+    text:"Un sourire suffit. Lou continue, intarissable, sans vraiment laisser de place pour autre chose."
+  },
+  {
+    id:"reac2_question", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"",
+    text:"Oh, la journée ? Bof, sans intérêt. Mais toi, raconte — enfin, après, parce que j'avais encore un truc à te dire…"
+  },
+  {
+    id:"narrateur_3", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"La question a existé l'espace d'une phrase, puis a disparu. La conversation, comme souvent, revient vers Lou."
+  },
+  {
+    id:"fin_accepte", type:"end",
+    title:"La soirée continue",
+    desc:"La tension du début de soirée s'est dissipée dans la chaleur du moment présent. Rien n'a été résolu — mais ce soir, ça n'a pas eu besoin de l'être. La même scène se rejouera, sous une forme ou une autre, une autre fois."
+  },
+
+  // ═══ FIL B : "je refuse" ═══
+  {
+    id:"branche_refuse_1", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
+    text:"Épuisé(e) ? Sérieusement ? On se voit jamais et là tu préfères rester chez toi."
+  },
+  {
+    id:"narrateur_4", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Un simple « non » vient de devenir un sujet de discussion. C'est souvent comme ça que ça commence."
+  },
+
+  // Choix réaction (sans impact) à l'intérieur du fil B
+  {
+    id:"choix_reaction_3", type:"choice",
+    choices:[
+      { label:"« Je suis vraiment fatigué(e), ce n'est pas contre toi. »", next:"reac3_explique" },
+      { label:"Ne rien répondre tout de suite.", next:"reac3_silence" },
+    ]
+  },
+  {
+    id:"reac3_explique", type:"dialogue",
+    character:"", image:"", background:"",
+    text:"Vous expliquez, calmement. Les mots sortent, mais vous sentez déjà qu'ils ne suffiront pas."
+  },
+  {
+    id:"reac3_silence", type:"dialogue",
+    character:"", image:"", background:"",
+    text:"Le silence s'étire. À l'autre bout, vous imaginez Lou en train de taper, puis d'effacer, puis de retaper."
+  },
+  {
+    id:"branche_refuse_2", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
+    text:"Ok. Ok, je vois. Très bien. Profite de ta soirée tranquille alors."
+  },
+  {
+    id:"narrateur_5", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"« Profite. » Le mot sonne comme une porte qu'on referme un peu plus fort que nécessaire."
+  },
+  {
+    id:"fin_refuse", type:"end",
+    title:"Le silence qui suit",
+    desc:"Pour ce soir, vous avez tenu votre position. Le silence qui s'installe n'est pas léger — mais pour une fois, il vous appartient. Demain, la conversation reprendra probablement comme si de rien n'était. Ou pas."
   },
 ];
-
-// ════════════════════════════════════════════════════════════
-//  ARBRE DES BRANCHES — pour le récap visuel
-//
-//  Décrit la structure narrative (indépendamment de l'état)
-//  afin de dessiner le diagramme : chaque nœud a une position
-//  et des liens vers ses enfants. "endingKey" relie un nœud
-//  feuille à une clé de ENDINGS.
-// ════════════════════════════════════════════════════════════
-const DECISION_TREE = {
-  nodes:[
-    { id:"start",   label:"Début",                x:60,  y:210 },
-
-    // Choix 1
-    { id:"c1_a", label:"« Pardon, promis »",        x:300, y:60  },
-    { id:"c1_b", label:"« Je ne te dois rien »",     x:300, y:210 },
-    { id:"c1_c", label:"« J'étais occupé »",         x:300, y:360 },
-
-    // Choix 2 (regroupé après choix 1 pour la lisibilité)
-    { id:"c2_a", label:"« Moi aussi je tiens à toi »", x:560, y:30  },
-    { id:"c2_b", label:"« Tu dis ça à chaque fois »",  x:560, y:135 },
-    { id:"c2_c", label:"Rester silencieux",            x:560, y:240 },
-    { id:"c2_x", label:"(suite du choix 2)",           x:560, y:345 },
-
-    // Fins
-    { id:"fin_fusion",  label:"Fusion totale",     x:860, y:20,  ending:"fusion"  },
-    { id:"fin_emprise", label:"Le cercle se resserre", x:860, y:110, ending:"emprise" },
-    { id:"fin_tension", label:"Trêve fragile",     x:860, y:200, ending:"tension" },
-    { id:"fin_conflit", label:"La dispute éclate", x:860, y:290, ending:"conflit" },
-    { id:"fin_rupture", label:"La porte se ferme", x:860, y:380, ending:"rupture" },
-  ],
-  links:[
-    ["start","c1_a"], ["start","c1_b"], ["start","c1_c"],
-    ["c1_a","c2_a"], ["c1_a","c2_b"], ["c1_a","c2_c"],
-    ["c1_b","c2_a"], ["c1_b","c2_b"], ["c1_b","c2_c"],
-    ["c1_c","c2_a"], ["c1_c","c2_b"], ["c1_c","c2_c"],
-    // chaque c2_* peut mener à plusieurs fins selon score cumulé —
-    // on relie vers les fins de façon générale (le chemin réel
-    // est mis en évidence dynamiquement)
-    ["c2_a","fin_fusion"], ["c2_a","fin_emprise"],
-    ["c2_b","fin_tension"], ["c2_b","fin_conflit"], ["c2_b","fin_rupture"],
-    ["c2_c","fin_tension"], ["c2_c","fin_conflit"], ["c2_c","fin_rupture"],
-  ]
-};
-
-// Map "choix fait" (label exact) → id de nœud dans l'arbre
-const CHOICE_TO_NODE = {
-  "« Pardon… je vais faire attention, promis. »": "c1_a",
-  "« Je ne te dois pas d'explication pour chaque silence. »": "c1_b",
-  "« Désolé, j'étais occupé, c'est tout. »": "c1_c",
-  "« Je sais, et moi aussi je tiens à toi. »": "c2_a",
-  "« Tu dis ça à chaque fois qu'on se dispute. »": "c2_b",
-  "Rester silencieux.": "c2_c",
-};
 
 // ════════════════════════════════════════════════════════════
 //  MOTEUR
@@ -520,9 +414,6 @@ story.forEach((s,i) => { if(s.id) idMap[s.id]=i; });
 // État du jeu
 const state = {
   index:0, autoMode:false, autoTimer:null, typeTimer:null, isTyping:false, log:[],
-  affinity: Object.fromEntries(Object.entries(CHARACTERS).map(([k,v])=>[k,v.start])),
-  choicePath: [],   // liste des labels de choix sélectionnés (dans l'ordre)
-  endingKey: null,  // clé dans ENDINGS une fois la fin atteinte
 };
 
 // ── DOM ──
@@ -540,68 +431,7 @@ const logList  = el('log-entries');
 const btnAuto  = el('btn-auto');
 const btnSave  = el('btn-save');
 const btnLoad  = el('btn-load');
-const affPanel = el('affinity-panel');
-const toast    = el('aff-toast');
-const summaryScreen = el('summary-screen');
-const summaryTree   = el('summary-tree');
-
-// ── Jauge d'affinité ──
-
-function buildAffinityUI(){
-  affPanel.innerHTML='';
-  Object.entries(CHARACTERS).forEach(([key,cfg])=>{
-    const row=document.createElement('div');
-    row.className='aff-row';
-    row.id='aff-row-'+key;
-    row.innerHTML=`
-      <span class="aff-heart">${cfg.heart}</span>
-      <span class="aff-name">${cfg.label}</span>
-      <div class="aff-bar-wrap"><div class="aff-bar" id="aff-bar-${key}"></div></div>
-      <span class="aff-val" id="aff-val-${key}"></span>`;
-    affPanel.appendChild(row);
-  });
-  refreshAffinityUI();
-}
-
-function barColor(pct){
-  if(pct<25) return '#e05050';
-  if(pct<50) return '#cc8840';
-  if(pct<75) return '#a08cff';
-  return '#7fdc8a';
-}
-
-function refreshAffinityUI(){
-  Object.entries(CHARACTERS).forEach(([key,cfg])=>{
-    const val=state.affinity[key];
-    const pct=Math.round(((val-cfg.min)/(cfg.max-cfg.min))*100);
-    const bar=document.getElementById('aff-bar-'+key);
-    const valEl=document.getElementById('aff-val-'+key);
-    if(bar){ bar.style.width=pct+'%'; bar.style.background=barColor(pct); }
-    if(valEl) valEl.textContent=val;
-  });
-}
-
-let toastTimer=null;
-function showToast(msg){
-  toast.textContent=msg;
-  toast.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>toast.classList.remove('show'),2200);
-}
-
-function applyAffinity(affObj){
-  if(!affObj) return;
-  Object.entries(affObj).forEach(([key,delta])=>{
-    if(!(key in state.affinity)) return;
-    const cfg=CHARACTERS[key];
-    const before=state.affinity[key];
-    state.affinity[key]=Math.max(cfg.min, Math.min(cfg.max, before+delta));
-    const diff=state.affinity[key]-before;
-    if(diff>0) showToast(`♥ ${cfg.label} +${diff}`);
-    else if(diff<0) showToast(`♡ ${cfg.label} ${diff}`);
-  });
-  refreshAffinityUI();
-}
+const endScreen = el('end-screen');
 
 // ── Navigation ──
 function go(indexOrId){
@@ -609,10 +439,9 @@ function go(indexOrId){
   if(idx===undefined||idx>=story.length) return;
   state.index=idx;
   const s=story[idx];
-  if(s.type==='dialogue')  showDialogue(s);
-  if(s.type==='choice')    showChoices(s);
-  if(s.type==='condition') resolveCondition(s);
-  if(s.type==='ending')    showEnding(s);
+  if(s.type==='dialogue') showDialogue(s);
+  if(s.type==='choice')   showChoices(s);
+  if(s.type==='end')      showEnd(s);
 }
 
 function showDialogue(s){
@@ -640,39 +469,16 @@ function showChoices(s){
     b.textContent=c.label;
     b.onclick=()=>{
       dChoice.classList.add('hidden');
-      applyAffinity(c.affinity);
-      state.choicePath.push(c.label);
       go(c.next);
     };
     dChoice.appendChild(b);
   });
 }
 
-// Résolution d'un nœud conditionnel à branches multiples
-function resolveCondition(s){
-  const val=state.affinity[s.check]??50;
-  for(const branch of s.branches){
-    if(val>=branch.min){ go(branch.next); return; }
-  }
-  // fallback : dernière branche
-  go(s.branches[s.branches.length-1].next);
-}
-
-// Affiche la scène de fin, puis programme l'ouverture du bilan
-function showEnding(s){
-  state.endingKey = s.ending;
-  dChoice.classList.add('hidden');
-  dArrow.style.display='';
-  if(s.background) bg.style.backgroundImage=`url('${s.background}')`;
-  if(s.image){ charImg.src=s.image; charCon.style.display=''; charImg.className='fi'; }
-  else { charCon.style.display='none'; }
-  dBox.classList.remove('narrator-mode');
-  dName.textContent=s.character||'';
-  typeText(s.text, ()=>{
-    state.log.push({name:s.character||'Narrateur', line:s.text, narrator:false});
-    // après un court délai, ouvrir le bilan
-    setTimeout(openSummary, 1400);
-  });
+function showEnd(s){
+  el('end-title').textContent = s.title;
+  el('end-desc').textContent = s.desc;
+  endScreen.classList.remove('hidden');
 }
 
 function typeText(text,onDone){
@@ -689,11 +495,9 @@ function typeText(text,onDone){
 function advance(){
   if(state.isTyping){
     const s=story[state.index];
-    if(s?.type==='dialogue' || s?.type==='ending'){ clearTimeout(state.typeTimer); state.isTyping=false; dText.textContent=s.text; }
+    if(s?.type==='dialogue'){ clearTimeout(state.typeTimer); state.isTyping=false; dText.textContent=s.text; }
     return;
   }
-  const s = story[state.index];
-  if(s?.type==='ending') return; // on attend l'ouverture automatique du bilan
   const next=state.index+1;
   if(next<story.length) go(next);
 }
@@ -715,10 +519,7 @@ function flash(btn,msg){ const o=btn.textContent; btn.textContent=msg; setTimeou
 
 function saveGame(){
   try{
-    localStorage.setItem('vn_save',JSON.stringify({
-      index:state.index, log:[...state.log], affinity:{...state.affinity},
-      choicePath:[...state.choicePath], endingKey:state.endingKey
-    }));
+    localStorage.setItem('vn_save',JSON.stringify({index:state.index,log:[...state.log]}));
     flash(btnSave,'Sauvegardé ✓');
   } catch{ alert('Impossible de sauvegarder.'); }
 }
@@ -729,121 +530,15 @@ function loadGame(){
     if(!r){alert('Aucune sauvegarde.');return;}
     const sl=JSON.parse(r);
     state.log=sl.log||[];
-    if(sl.affinity) Object.assign(state.affinity,sl.affinity);
-    state.choicePath = sl.choicePath || [];
-    state.endingKey = sl.endingKey || null;
-    refreshAffinityUI();
     go(sl.index);
     flash(btnLoad,'Chargé ✓');
   } catch{ alert('Erreur chargement.'); }
-}
-
-// ════════════════════════════════════════════════════════════
-//  ÉCRAN RÉCAPITULATIF — diagramme d'arbre (style Detroit: BH)
-// ════════════════════════════════════════════════════════════
-
-function openSummary(){
-  el('game-screen').classList.add('hidden');
-  drawDecisionTree();
-  showEndingInfo();
-  summaryScreen.classList.remove('hidden');
-}
-
-function showEndingInfo(){
-  const key = state.endingKey;
-  const data = ENDINGS[key];
-  el('summary-ending-name').textContent = data ? data.title : "Fin inconnue";
-  el('summary-ending-desc').textContent = data ? data.desc : "";
-  const aff = state.affinity.Lou;
-  el('summary-ending-aff').textContent = `Affinité finale avec Lou : ${aff} / 100`;
-}
-
-// Construit le chemin de nœuds parcourus dans l'arbre, à partir
-// de state.choicePath + state.endingKey
-function getTraversedNodeIds(){
-  const ids = ['start'];
-  state.choicePath.forEach(label=>{
-    const nodeId = CHOICE_TO_NODE[label];
-    if(nodeId) ids.push(nodeId);
-  });
-  // dernier nœud = la fin
-  const endingNodeId = DECISION_TREE.nodes.find(n=>n.ending===state.endingKey)?.id;
-  if(endingNodeId) ids.push(endingNodeId);
-  return ids;
-}
-
-function drawDecisionTree(){
-  const traversed = getTraversedNodeIds();
-  const traversedSet = new Set(traversed);
-
-  // Construire un set des liens parcourus (paires consécutives)
-  const traversedLinks = new Set();
-  for(let i=0;i<traversed.length-1;i++){
-    traversedLinks.add(traversed[i]+'->'+traversed[i+1]);
-  }
-
-  const nodeById = Object.fromEntries(DECISION_TREE.nodes.map(n=>[n.id,n]));
-
-  let svg = '';
-
-  // ── Liens ──
-  DECISION_TREE.links.forEach(([from,to])=>{
-    const a = nodeById[from], b = nodeById[to];
-    const isTraversed = traversedLinks.has(from+'->'+to);
-    const midX = (a.x + b.x)/2;
-    const path = `M ${a.x+90} ${a.y+14} C ${midX} ${a.y+14}, ${midX} ${b.y+14}, ${b.x} ${b.y+14}`;
-    svg += `<path d="${path}" fill="none"
-      stroke="${isTraversed ? '#b89fff' : 'rgba(180,160,255,0.15)'}"
-      stroke-width="${isTraversed ? 2.5 : 1.5}"
-      ${isTraversed ? '' : 'stroke-dasharray="3,4"'}
-    />`;
-  });
-
-  // ── Nœuds ──
-  DECISION_TREE.nodes.forEach(n=>{
-    const isTraversed = traversedSet.has(n.id);
-    const isEnding = !!n.ending;
-    const isFinalEnding = n.ending === state.endingKey;
-
-    let fill, stroke, textColor;
-    if(isFinalEnding){ fill='rgba(184,159,255,0.22)'; stroke='#b89fff'; textColor='#ede9ff'; }
-    else if(isTraversed){ fill='rgba(184,159,255,0.10)'; stroke='#7c5ccc'; textColor='#d4c5ff'; }
-    else { fill='rgba(255,255,255,0.02)'; stroke='rgba(180,160,255,0.18)'; textColor='#6e6590'; }
-
-    const w = isEnding ? 130 : 180;
-    const h = 38;
-
-    svg += `<g>
-      <rect x="${n.x}" y="${n.y}" width="${w}" height="${h}" rx="8"
-        fill="${fill}" stroke="${stroke}" stroke-width="${isFinalEnding?2.5:1.3}"/>
-      <text x="${n.x + w/2}" y="${n.y + h/2 + 4}" text-anchor="middle"
-        font-size="${isEnding?'11':'10.5'}" font-family="Segoe UI, sans-serif"
-        fill="${textColor}" font-style="${isEnding?'italic':'normal'}"
-        font-weight="${isFinalEnding?'600':'400'}">
-        ${escapeXml(n.label)}
-      </text>
-    </g>`;
-
-    if(isFinalEnding){
-      // petit marqueur "vous êtes ici"
-      svg += `<text x="${n.x + w/2}" y="${n.y - 8}" text-anchor="middle"
-        font-size="10" font-family="Segoe UI, sans-serif" fill="#b89fff"
-        letter-spacing="1px">VOTRE FIN</text>`;
-    }
-  });
-
-  summaryTree.innerHTML = svg;
-}
-
-function escapeXml(str){
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // ── Événements ──
 el('btn-start').onclick=()=>{
   el('title-screen').classList.add('hidden');
   el('game-screen').classList.remove('hidden');
-  buildAffinityUI();
   go(0);
 };
 
@@ -869,16 +564,11 @@ el('btn-close-log').onclick=()=>logPanel.classList.add('hidden');
 btnSave.onclick=saveGame;
 btnLoad.onclick=loadGame;
 
-el('btn-summary-continue').onclick=()=>{
-  // Réinitialise et revient à l'écran titre
+el('btn-end-restart').onclick=()=>{
   state.index=0;
   state.autoMode=false;
   state.log=[];
-  state.choicePath=[];
-  state.endingKey=null;
-  Object.entries(CHARACTERS).forEach(([k,v])=>state.affinity[k]=v.start);
-  refreshAffinityUI();
-  summaryScreen.classList.add('hidden');
+  endScreen.classList.add('hidden');
   el('title-screen').classList.remove('hidden');
 };
 </script>
