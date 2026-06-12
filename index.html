@@ -404,15 +404,15 @@ const story = [
     id: "elara_arrive",
     type: "dialogue",
     character: "Elara",
-    image: "https://i.postimg.cc/MTTSWYfZ/IMG-5548.webp",
-    background: "https://i.postimg.cc/WtR3vpPm/IMG-7159.jpg",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
     text: "Vous êtes enfin là. J'ai failli ne plus y croire."
   },
   {
     id: "elara_mystere",
     type: "dialogue",
     character: "Elara",
-    image: "https://i.postimg.cc/NFKBxxgh/IMG-5547.webp",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
     background: "",
     text: "Il y a des choses que je dois vous montrer. Des choses que personne d'autre ne peut voir."
   },
@@ -488,7 +488,7 @@ const story = [
 const idMap = {};
 story.forEach((s,i) => { if(s.id) idMap[s.id] = i; });
 
-const state = { index:0, autoMode:false, autoTimer:null, isTyping:false, log:[] };
+const state = { index:0, autoMode:false, autoTimer:null, typeTimer:null, isTyping:false, log:[] };
 
 // ── Helpers DOM ──
 const el = id => document.getElementById(id);
@@ -545,10 +545,12 @@ function showChoices(s){
 }
 
 function typeText(text,onDone){
+  clearTimeout(state.typeTimer);
   state.isTyping=true; dText.textContent=''; let i=0;
   const tick=()=>{
     if(i>=text.length){state.isTyping=false;if(onDone)onDone();return;}
-    dText.textContent+=text[i++]; setTimeout(tick,26);
+    dText.textContent+=text[i++];
+    state.typeTimer=setTimeout(tick,26);
   };
   tick();
 }
@@ -556,7 +558,11 @@ function typeText(text,onDone){
 function advance(){
   if(state.isTyping){
     const s=story[state.index];
-    if(s?.type==='dialogue'){state.isTyping=false;dText.textContent=s.text;}
+    if(s?.type==='dialogue'){
+      clearTimeout(state.typeTimer);
+      state.isTyping=false;
+      dText.textContent=s.text;
+    }
     return;
   }
   const next=state.index+1;
