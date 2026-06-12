@@ -1,83 +1,67 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CHAMBRE 404</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visual Novel</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- ÉCRAN TITRE -->
-  <div id="screen-title" class="screen active">
+  <!-- ── ÉCRAN TITRE ── -->
+  <div id="title-screen">
     <div class="title-content">
-      <div class="title-glitch" data-text="CHAMBRE 404">CHAMBRE 404</div>
-      <p class="title-sub">Tu t'es réveillé. Tu ne sais pas où tu es.<br>Quelqu'un est avec toi.</p>
-      <button class="btn-main" onclick="Game.startGame()">COMMENCER</button>
-      <p class="title-warning">⚠ Contient des thèmes de détresse psychologique</p>
+      <h1 id="game-title">Mon Visual Novel</h1>
+      <p id="game-subtitle">Une histoire à découvrir…</p>
+      <button id="btn-start">▶ Commencer</button>
     </div>
   </div>
 
-  <!-- ÉCRAN PRINCIPAL DE JEU -->
-  <div id="screen-game" class="screen">
+  <!-- ── SCÈNE PRINCIPALE ── -->
+  <div id="game-screen" class="hidden">
 
-    <!-- ZONE DE SCÈNE (image / environnement) -->
-    <div id="scene-area">
-      <canvas id="scene-canvas"></canvas>
-      <!-- Hotspots cliquables superposés -->
-      <div id="hotspots-layer"></div>
-      <!-- Nom de la zone actuelle -->
-      <div id="location-label"></div>
+    <!-- Arrière-plan -->
+    <div id="background"></div>
+
+    <!-- Personnage -->
+    <div id="character-container">
+      <img id="character-img" src="" alt="Personnage" />
     </div>
 
-    <!-- BOÎTE DE DIALOGUE -->
-    <div id="dialogue-box" class="hidden">
-      <div id="dialogue-portrait">
-        <canvas id="portrait-canvas"></canvas>
+    <!-- Boîte de dialogue -->
+    <div id="dialogue-box">
+      <div id="dialogue-header">
+        <span id="character-name"></span>
       </div>
-      <div id="dialogue-content">
-        <div id="dialogue-speaker"></div>
-        <div id="dialogue-text"></div>
-        <div id="dialogue-continue">▶</div>
+      <div id="dialogue-text-wrapper">
+        <p id="dialogue-text"></p>
+        <span id="next-arrow">▼</span>
       </div>
+
+      <!-- Choix (optionnel) -->
+      <div id="choices-container" class="hidden"></div>
     </div>
 
-    <!-- CHOIX DE DIALOGUE -->
-    <div id="choices-box" class="hidden">
-      <div id="choices-list"></div>
+    <!-- Barre d'outils -->
+    <div id="toolbar">
+      <button class="tool-btn" id="btn-auto" title="Auto">⏵ Auto</button>
+      <button class="tool-btn" id="btn-skip" title="Passer">⏭ Passer</button>
+      <button class="tool-btn" id="btn-log"  title="Journal">📜 Log</button>
+      <button class="tool-btn" id="btn-save" title="Sauvegarder">💾 Save</button>
+      <button class="tool-btn" id="btn-load" title="Charger">📂 Load</button>
     </div>
 
-    <!-- INVENTAIRE / HUD -->
-    <div id="hud">
-      <div id="inventory-bar">
-        <span class="hud-label">INVENTAIRE</span>
-        <div id="inventory-items"></div>
+    <!-- Journal (historique) -->
+    <div id="log-panel" class="hidden">
+      <div id="log-header">
+        <span>Journal</span>
+        <button id="btn-close-log">✕</button>
       </div>
-      <div id="sanity-bar">
-        <span class="hud-label">ÉTAT MENTAL</span>
-        <div id="sanity-track">
-          <div id="sanity-fill"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MENU NAVIGATION (zones) -->
-    <div id="nav-bar">
-      <div id="nav-label">OÙ ALLER ?</div>
-      <div id="nav-exits"></div>
+      <div id="log-entries"></div>
     </div>
 
   </div>
 
-  <!-- ÉCRAN DE FIN -->
-  <div id="screen-end" class="screen">
-    <div class="end-content">
-      <div id="end-title"></div>
-      <div id="end-text"></div>
-      <button class="btn-main" onclick="Game.restartGame()">RECOMMENCER</button>
-    </div>
-  </div>
-
-  <script src="game.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
