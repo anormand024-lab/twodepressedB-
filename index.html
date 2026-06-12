@@ -3,297 +3,165 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Mon Visual Novel</title>
+<title>Cercle Vicieux</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --bg:#0a0910;
-  --panel:rgba(10,9,22,0.85);
-  --border:rgba(180,160,255,0.18);
-  --accent:#b89fff;
-  --accent2:#7c5ccc;
-  --text:#ede9ff;
-  --name:#d4c5ff;
-  --muted:#6e6590;
-  --r:14px;
+  --bg:#0a0910;--panel:rgba(10,9,22,0.85);--border:rgba(180,160,255,0.18);
+  --accent:#b89fff;--accent2:#7c5ccc;--text:#ede9ff;--name:#d4c5ff;--muted:#6e6590;--r:14px;
+  --narrator:#8c8aa8;
 }
-
-body{
-  background:var(--bg);
-  font-family:'Segoe UI',system-ui,sans-serif;
-  color:var(--text);
-  height:100dvh;
-  overflow:hidden;
-  user-select:none;
-}
-
+body{background:var(--bg);font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);height:100dvh;overflow:hidden;user-select:none;}
 .hidden{display:none!important}
 
 /* ── TITRE ── */
-#title-screen{
-  position:fixed;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:200;
-  background:#0a0910;
-  overflow:hidden;
-}
-
-/* étoiles */
-#title-screen::before{
-  content:'';
-  position:absolute;inset:0;
-  background-image:
-    radial-gradient(1px 1px at 20% 15%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 40%, rgba(255,255,255,.7) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 80% 20%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 35% 70%, rgba(255,255,255,.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,.6) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 10% 55%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 45% 25%, rgba(255,255,255,.8) 0%, transparent 100%),
-    radial-gradient(1px 1px at 75% 50%, rgba(255,255,255,.5) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 25% 85%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 5% 30%, rgba(255,255,255,.6) 0%, transparent 100%),
-    radial-gradient(1px 1px at 92% 38%, rgba(255,255,255,.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 48% 92%, rgba(255,255,255,.4) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 60% 10%, #fff 0%, transparent 100%),
-    radial-gradient(1px 1px at 15% 45%, rgba(255,255,255,.7) 0%, transparent 100%);
-  pointer-events:none;
-}
-
-/* lueur centrale */
-#title-screen::after{
-  content:'';
-  position:absolute;
-  width:600px;height:400px;
-  top:50%;left:50%;
-  transform:translate(-50%,-60%);
-  background:radial-gradient(ellipse, rgba(120,80,220,0.22) 0%, transparent 70%);
-  pointer-events:none;
-}
-
-.title-inner{
-  position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;
-  gap:1.2rem;
-  animation:fadeUp .9s ease both;
-}
-
-/* ligne décorative */
-.title-deco{
-  display:flex;align-items:center;gap:12px;
-  margin-bottom:.4rem;
-}
-.title-deco span{
-  display:block;height:1px;width:60px;
-  background:linear-gradient(90deg,transparent,var(--accent2));
-}
-.title-deco span:last-child{
-  background:linear-gradient(90deg,var(--accent2),transparent);
-}
-.title-deco i{
-  font-size:16px;color:var(--accent2);letter-spacing:.2em;
-}
-
-#game-title{
-  font-family:Georgia,serif;
-  font-size:clamp(2.4rem,6vw,4.2rem);
-  font-weight:normal;
-  letter-spacing:.1em;
-  color:var(--name);
-  text-shadow:0 0 60px rgba(160,120,255,.4);
-  line-height:1.1;
-}
-
-#game-subtitle{
-  font-size:.95rem;
-  color:var(--muted);
-  letter-spacing:.22em;
-  text-transform:uppercase;
-}
-
-.title-sep{
-  width:1px;height:40px;
-  background:linear-gradient(to bottom,transparent,var(--border),transparent);
-  margin:.2rem 0;
-}
-
-#btn-start{
-  margin-top:.5rem;
-  padding:.7rem 2.6rem;
-  font-size:.9rem;
-  font-family:inherit;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  background:transparent;
-  color:var(--accent);
-  border:1px solid var(--accent2);
-  border-radius:40px;
-  cursor:pointer;
-  transition:background .25s,color .25s,border-color .25s,box-shadow .25s;
-  position:relative;
-  overflow:hidden;
-}
-#btn-start::before{
-  content:'';
-  position:absolute;inset:0;
-  background:var(--accent2);
-  opacity:0;
-  transition:opacity .25s;
-  border-radius:40px;
-}
-#btn-start:hover{
-  color:#fff;
-  border-color:var(--accent);
-  box-shadow:0 0 28px rgba(140,100,255,.35);
-}
+#title-screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;background:#0a0910;overflow:hidden;}
+#title-screen::before{content:'';position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 15%,#fff 0%,transparent 100%),radial-gradient(1px 1px at 55% 40%,rgba(255,255,255,.7) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 80% 20%,#fff 0%,transparent 100%),radial-gradient(1px 1px at 35% 70%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 65% 80%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 10% 55%,#fff 0%,transparent 100%),radial-gradient(1px 1px at 90% 60%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 45% 25%,rgba(255,255,255,.8) 0%,transparent 100%),radial-gradient(1px 1px at 75% 50%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 25% 85%,#fff 0%,transparent 100%),radial-gradient(1px 1px at 5% 30%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1px 1px at 92% 38%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 48% 92%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1.5px 1.5px at 60% 10%,#fff 0%,transparent 100%),radial-gradient(1px 1px at 15% 45%,rgba(255,255,255,.7) 0%,transparent 100%);pointer-events:none;}
+#title-screen::after{content:'';position:absolute;width:600px;height:400px;top:50%;left:50%;transform:translate(-50%,-60%);background:radial-gradient(ellipse,rgba(120,80,220,0.22) 0%,transparent 70%);pointer-events:none;}
+.title-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:1.2rem;animation:fadeUp .9s ease both;}
+.title-deco{display:flex;align-items:center;gap:12px;margin-bottom:.4rem;}
+.title-deco span{display:block;height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--accent2));}
+.title-deco span:last-child{background:linear-gradient(90deg,var(--accent2),transparent);}
+.title-deco i{font-size:16px;color:var(--accent2);letter-spacing:.2em;}
+#game-title{font-family:Georgia,serif;font-size:clamp(2.4rem,6vw,4.2rem);font-weight:normal;letter-spacing:.1em;color:var(--name);text-shadow:0 0 60px rgba(160,120,255,.4);line-height:1.1;}
+#game-subtitle{font-size:.95rem;color:var(--muted);letter-spacing:.22em;text-transform:uppercase;}
+.title-sep{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--border),transparent);margin:.2rem 0;}
+#btn-start{margin-top:.5rem;padding:.7rem 2.6rem;font-size:.9rem;font-family:inherit;letter-spacing:.14em;text-transform:uppercase;background:transparent;color:var(--accent);border:1px solid var(--accent2);border-radius:40px;cursor:pointer;transition:background .25s,color .25s,border-color .25s,box-shadow .25s;position:relative;overflow:hidden;}
+#btn-start::before{content:'';position:absolute;inset:0;background:var(--accent2);opacity:0;transition:opacity .25s;border-radius:40px;}
+#btn-start:hover{color:#fff;border-color:var(--accent);box-shadow:0 0 28px rgba(140,100,255,.35);}
 #btn-start:hover::before{opacity:1}
 #btn-start span{position:relative;z-index:1}
 
 /* ── SCÈNE ── */
-#game-screen{
-  position:fixed;inset:0;
-  display:flex;align-items:flex-end;justify-content:center;
-}
-
-#background{
-  position:absolute;inset:0;
-  background-size:cover;
-  background-position:center;
-  transition:opacity .55s ease;
-}
-#background::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(8,6,20,.75) 0%,rgba(8,6,20,.15) 50%,transparent 100%);
-}
-
-#character-container{
-  position:absolute;bottom:155px;left:50%;
-  transform:translateX(-50%);
-  pointer-events:none;
-  max-height:70vh;
-  display:flex;align-items:flex-end;
-  transition:opacity .4s;
-}
-#character-img{
-  max-height:70vh;max-width:38vw;
-  object-fit:contain;
-  filter:drop-shadow(0 6px 28px rgba(0,0,0,.75));
-}
+#game-screen{position:fixed;inset:0;display:flex;align-items:flex-end;justify-content:center;}
+#background{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .55s ease;}
+#background::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(8,6,20,.75) 0%,rgba(8,6,20,.15) 50%,transparent 100%);}
+#character-container{position:absolute;bottom:155px;left:50%;transform:translateX(-50%);pointer-events:none;max-height:70vh;display:flex;align-items:flex-end;transition:opacity .4s;}
+#character-img{max-height:70vh;max-width:38vw;object-fit:contain;filter:drop-shadow(0 6px 28px rgba(0,0,0,.75));}
 #character-img.fi{animation:charIn .4s ease both}
 #character-img.fo{animation:charOut .3s ease both}
 
 /* ── BOÎTE DIALOGUE ── */
-#dialogue-box{
-  position:relative;z-index:10;
-  width:min(800px,94vw);
-  margin-bottom:24px;
+#dialogue-box{position:relative;z-index:10;width:min(800px,94vw);margin-bottom:24px;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 2px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(180,160,255,.08);cursor:pointer;overflow:hidden;transition:border-color .4s,box-shadow .4s;}
+#dialogue-box::before{content:'';display:block;height:2px;background:linear-gradient(90deg,transparent 0%,var(--accent2) 30%,var(--accent) 60%,transparent 100%);opacity:.6;transition:background .4s;}
+#dialogue-header{padding:.55rem 1.1rem .1rem}
+#character-name{display:inline-block;font-family:Georgia,serif;font-size:.95rem;font-weight:normal;color:var(--name);letter-spacing:.08em;padding:.15rem 0;border-bottom:1.5px solid var(--accent2);min-width:50px;min-height:1.3em;opacity:.92;transition:color .3s,border-color .3s;}
+#dialogue-text-wrapper{padding:.65rem 1.1rem .9rem;position:relative;}
+#dialogue-text{font-size:clamp(.95rem,2vw,1.05rem);line-height:1.8;color:var(--text);min-height:3em;white-space:pre-line;}
+#next-arrow{position:absolute;bottom:.55rem;right:1rem;color:var(--accent);font-size:.8rem;animation:bounce 1.1s infinite;opacity:.7;}
+#choices-container{display:flex;flex-direction:column;gap:.45rem;padding:.3rem 1.1rem .9rem;}
+.choice-btn{padding:.6rem .9rem;background:rgba(140,100,255,.06);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.93rem;cursor:pointer;text-align:left;transition:background .2s,border-color .2s;}
+.choice-btn:hover{background:rgba(140,100,255,.18);border-color:var(--accent2)}
+
+/* ── STYLE NARRATEUR EXTÉRIEUR ── */
+#dialogue-box.narrator-mode{border-color:rgba(140,138,168,.35);box-shadow:0 2px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(140,138,168,.12);}
+#dialogue-box.narrator-mode::before{background:linear-gradient(90deg,transparent 0%,var(--narrator) 30%,#b8b6d0 60%,transparent 100%);}
+#dialogue-box.narrator-mode #character-name{color:var(--narrator);border-bottom-color:var(--narrator);font-style:italic;letter-spacing:.14em;}
+#dialogue-box.narrator-mode #dialogue-text{color:#c4c2da;font-style:italic;font-size:clamp(.88rem,1.8vw,.98rem);}
+
+/* ── TOOLBAR ── */
+#toolbar{position:fixed;top:14px;right:14px;display:flex;gap:7px;z-index:20;}
+.tool-btn{padding:.35rem .85rem;font-size:.75rem;font-family:inherit;background:var(--panel);color:var(--muted);border:1px solid var(--border);border-radius:20px;cursor:pointer;backdrop-filter:blur(12px);transition:color .2s,border-color .2s;}
+.tool-btn:hover,.tool-btn.active{color:var(--accent);border-color:var(--accent2)}
+
+/* ── JAUGE D'AFFINITÉ (1 seul personnage) ── */
+#affinity-panel{
+  position:fixed;top:58px;right:14px;
+  display:flex;flex-direction:column;gap:6px;
+  z-index:19;
+  min-width:160px;
+}
+.aff-row{
+  display:flex;align-items:center;gap:7px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:.28rem .75rem .28rem .6rem;
+  backdrop-filter:blur(12px);
+}
+.aff-heart{font-size:.85rem;line-height:1;}
+.aff-name{font-size:.72rem;color:var(--muted);min-width:38px;}
+.aff-bar-wrap{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;}
+.aff-bar{height:100%;border-radius:99px;transition:width .5s ease,background .5s ease;}
+.aff-val{font-size:.7rem;color:var(--muted);min-width:22px;text-align:right;}
+
+/* notification affinité */
+#aff-toast{
+  position:fixed;bottom:180px;left:50%;transform:translateX(-50%);
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:30px;padding:.4rem 1.1rem;
+  font-size:.82rem;color:var(--name);
+  opacity:0;pointer-events:none;
+  transition:opacity .3s;
+  z-index:30;white-space:nowrap;
+}
+#aff-toast.show{opacity:1}
+
+/* ── LOG ── */
+#log-panel{position:fixed;inset:0;z-index:50;background:rgba(8,6,20,.96);backdrop-filter:blur(22px);display:flex;flex-direction:column;animation:fadeUp .2s ease both;}
+#log-header{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.4rem;border-bottom:1px solid var(--border);font-family:Georgia,serif;font-size:1rem;color:var(--name);}
+#btn-close-log{background:none;border:none;color:var(--muted);font-size:1.1rem;cursor:pointer;transition:color .2s;}
+#btn-close-log:hover{color:var(--text)}
+#log-entries{overflow-y:auto;padding:1rem 1.4rem 2rem;display:flex;flex-direction:column;gap:1.1rem;}
+.log-entry{display:flex;flex-direction:column;gap:.25rem}
+.log-entry.is-narrator .log-name{color:var(--narrator);font-style:italic;}
+.log-entry.is-narrator .log-line{font-style:italic;color:#8a87a0;}
+.log-name{font-size:.82rem;color:var(--name);font-weight:600}
+.log-line{font-size:.93rem;color:var(--muted);line-height:1.65}
+
+/* ── ÉCRAN RÉCAPITULATIF (arbre de branches) ── */
+#summary-screen{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(6,5,14,.97);backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;
+  padding:2.2rem 1.2rem 1.6rem;
+  overflow-y:auto;
+  animation:fadeUp .35s ease both;
+}
+#summary-title{
+  font-family:Georgia,serif;font-size:clamp(1.4rem,4vw,2rem);
+  color:var(--name);letter-spacing:.08em;margin-bottom:.3rem;text-align:center;
+}
+#summary-subtitle{
+  font-size:.85rem;color:var(--muted);letter-spacing:.12em;
+  text-transform:uppercase;margin-bottom:1.6rem;text-align:center;
+}
+#summary-tree-wrap{
+  width:min(960px,96vw);
   background:var(--panel);
   border:1px solid var(--border);
   border-radius:var(--r);
-  backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  box-shadow:0 2px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(180,160,255,.08);
-  cursor:pointer;
-  overflow:hidden;
+  padding:1.2rem;
+  margin-bottom:1.4rem;
 }
-
-/* trait coloré en haut */
-#dialogue-box::before{
-  content:'';
-  display:block;height:2px;
-  background:linear-gradient(90deg,transparent 0%,var(--accent2) 30%,var(--accent) 60%,transparent 100%);
-  opacity:.6;
-}
-
-#dialogue-header{padding:.55rem 1.1rem .1rem}
-
-#character-name{
-  display:inline-block;
-  font-family:Georgia,serif;
-  font-size:.95rem;font-weight:normal;
-  color:var(--name);
-  letter-spacing:.08em;
-  padding:.15rem 0;
-  border-bottom:1.5px solid var(--accent2);
-  min-width:50px;min-height:1.3em;
-  opacity:.92;
-}
-
-#dialogue-text-wrapper{
-  padding:.65rem 1.1rem .9rem;
-  position:relative;
-}
-#dialogue-text{
-  font-size:clamp(.95rem,2vw,1.05rem);
-  line-height:1.8;
-  color:var(--text);
-  min-height:3em;
-  white-space:pre-line;
-}
-#next-arrow{
-  position:absolute;bottom:.55rem;right:1rem;
-  color:var(--accent);font-size:.8rem;
-  animation:bounce 1.1s infinite;opacity:.7;
-}
-
-#choices-container{
-  display:flex;flex-direction:column;gap:.45rem;
-  padding:.3rem 1.1rem .9rem;
-}
-.choice-btn{
-  padding:.6rem .9rem;
-  background:rgba(140,100,255,.06);
+#summary-tree{width:100%;height:auto;display:block;}
+#summary-ending-box{
+  width:min(640px,94vw);
+  background:var(--panel);
   border:1px solid var(--border);
-  border-radius:8px;
-  color:var(--text);font-size:.93rem;
-  cursor:pointer;text-align:left;
-  transition:background .2s,border-color .2s;
+  border-radius:var(--r);
+  padding:1.2rem 1.4rem;
+  text-align:center;
+  margin-bottom:1.6rem;
 }
-.choice-btn:hover{background:rgba(140,100,255,.18);border-color:var(--accent2)}
-
-/* ── TOOLBAR ── */
-#toolbar{
-  position:fixed;top:14px;right:14px;
-  display:flex;gap:7px;z-index:20;
+#summary-ending-name{
+  font-family:Georgia,serif;font-size:1.2rem;color:var(--name);
+  letter-spacing:.06em;margin-bottom:.5rem;
 }
-.tool-btn{
-  padding:.35rem .85rem;font-size:.75rem;
-  font-family:inherit;
-  background:var(--panel);color:var(--muted);
-  border:1px solid var(--border);border-radius:20px;
-  cursor:pointer;
-  backdrop-filter:blur(12px);
-  transition:color .2s,border-color .2s;
+#summary-ending-desc{
+  font-size:.9rem;color:var(--muted);line-height:1.7;
 }
-.tool-btn:hover,.tool-btn.active{color:var(--accent);border-color:var(--accent2)}
-
-/* ── LOG ── */
-#log-panel{
-  position:fixed;inset:0;z-index:50;
-  background:rgba(8,6,20,.96);backdrop-filter:blur(22px);
-  display:flex;flex-direction:column;
-  animation:fadeUp .2s ease both;
+#summary-ending-aff{
+  font-size:.8rem;color:var(--accent);margin-top:.6rem;letter-spacing:.06em;
 }
-#log-header{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:1rem 1.4rem;
-  border-bottom:1px solid var(--border);
-  font-family:Georgia,serif;font-size:1rem;color:var(--name);
+#btn-summary-continue{
+  padding:.7rem 2.4rem;font-size:.85rem;font-family:inherit;
+  letter-spacing:.14em;text-transform:uppercase;
+  background:transparent;color:var(--accent);
+  border:1px solid var(--accent2);border-radius:40px;cursor:pointer;
+  transition:background .25s,color .25s,box-shadow .25s;
 }
-#btn-close-log{
-  background:none;border:none;color:var(--muted);
-  font-size:1.1rem;cursor:pointer;transition:color .2s;
-}
-#btn-close-log:hover{color:var(--text)}
-#log-entries{
-  overflow-y:auto;padding:1rem 1.4rem 2rem;
-  display:flex;flex-direction:column;gap:1.1rem;
-}
-.log-entry{display:flex;flex-direction:column;gap:.25rem}
-.log-name{font-size:.82rem;color:var(--name);font-weight:600}
-.log-line{font-size:.93rem;color:var(--muted);line-height:1.65}
+#btn-summary-continue:hover{color:#fff;box-shadow:0 0 28px rgba(140,100,255,.35);background:var(--accent2);}
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
@@ -307,13 +175,9 @@ body{
 <!-- TITRE -->
 <div id="title-screen">
   <div class="title-inner">
-    <div class="title-deco">
-      <span></span>
-      <i>✦</i>
-      <span></span>
-    </div>
-    <h1 id="game-title">Mon Visual Novel</h1>
-    <p id="game-subtitle">Une histoire à découvrir</p>
+    <div class="title-deco"><span></span><i>✦</i><span></span></div>
+    <h1 id="game-title">Cercle Vicieux</h1>
+    <p id="game-subtitle">Une histoire d'amour qui ne devrait pas en être une</p>
     <div class="title-sep"></div>
     <button id="btn-start"><span>▶ Commencer</span></button>
   </div>
@@ -322,9 +186,7 @@ body{
 <!-- SCÈNE -->
 <div id="game-screen" class="hidden">
   <div id="background"></div>
-  <div id="character-container">
-    <img id="character-img" src="" alt="Personnage"/>
-  </div>
+  <div id="character-container"><img id="character-img" src="" alt="Personnage"/></div>
   <div id="dialogue-box">
     <div id="dialogue-header"><span id="character-name"></span></div>
     <div id="dialogue-text-wrapper">
@@ -340,171 +202,406 @@ body{
     <button class="tool-btn" id="btn-save">💾 Save</button>
     <button class="tool-btn" id="btn-load">📂 Load</button>
   </div>
+  <!-- Jauge d'affinité (générée dynamiquement) -->
+  <div id="affinity-panel"></div>
+  <!-- Toast notification -->
+  <div id="aff-toast"></div>
   <div id="log-panel" class="hidden">
-    <div id="log-header">
-      <span>Journal</span>
-      <button id="btn-close-log">✕</button>
-    </div>
+    <div id="log-header"><span>Journal</span><button id="btn-close-log">✕</button></div>
     <div id="log-entries"></div>
   </div>
 </div>
 
+<!-- ÉCRAN RÉCAPITULATIF (arbre des choix) -->
+<div id="summary-screen" class="hidden">
+  <h1 id="summary-title">Bilan du chapitre</h1>
+  <p id="summary-subtitle">Le chemin que vous avez emprunté</p>
+  <div id="summary-tree-wrap">
+    <svg id="summary-tree" viewBox="0 0 960 420" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <div id="summary-ending-box">
+    <div id="summary-ending-name"></div>
+    <div id="summary-ending-desc"></div>
+    <div id="summary-ending-aff"></div>
+  </div>
+  <button id="btn-summary-continue"><span>Recommencer</span></button>
+</div>
+
 <script>
-// ============================================================
-//  SCÉNARIO — modifie cette partie pour créer ton histoire
-// ============================================================
+// ════════════════════════════════════════════════════════════
+//  CONFIGURATION DU PERSONNAGE & DE L'AFFINITÉ
+// ════════════════════════════════════════════════════════════
+const CHARACTERS = {
+  Lou: { label:"Lou", heart:"♥", min:0, max:100, start:50 },
+};
+
+// ════════════════════════════════════════════════════════════
+//  DÉFINITION DES FINS (5 fins possibles)
 //
-//  Chaque scène a un "id" unique que TU choisis.
-//  Dans les choix, "next" pointe vers l'id d'une autre scène.
+//  Chaque fin est identifiée par une clé. On y associe :
+//  - titre affiché dans le bilan
+//  - description (sans glorifier la dynamique)
+//  - seuil d'affinité associé (pour info/affichage)
+// ════════════════════════════════════════════════════════════
+const ENDINGS = {
+  emprise: {
+    title:"Le cercle se resserre",
+    desc:"Chaque concession a renforcé l'emprise de Lou. Le calme revenu n'est qu'une pause avant le prochain reproche.",
+  },
+  fusion: {
+    title:"La fusion totale",
+    desc:"Vous avez cédé sur tout, jusqu'à ne plus distinguer vos propres limites de celles que Lou vous impose.",
+  },
+  tension: {
+    title:"Trêve fragile",
+    desc:"Rien n'est résolu. La même dispute attend simplement son heure, prête à ressurgir au moindre prétexte.",
+  },
+  conflit: {
+    title:"La dispute éclate",
+    desc:"Le silence qui suit n'est pas un répit : c'est l'attente du prochain affrontement, un peu plus violent que le précédent.",
+  },
+  rupture: {
+    title:"La porte qui se ferme",
+    desc:"Pour la première fois, vous avez tenu votre position jusqu'au bout. Ce n'est pas la fin de la difficulté — mais c'est un autre chemin qui commence.",
+  },
+};
+
+// ════════════════════════════════════════════════════════════
+//  SCÉNARIO — « Cercle Vicieux »
 //
-//  DIALOGUE :
-//  {
-//    id        : "nom_de_la_scene",
-//    type      : "dialogue",
-//    character : "Nom du perso",          ← "" pour narrateur
-//    image     : "https://url-image.png", ← "" pour pas de perso
-//    background: "https://url-fond.jpg",  ← "" pour ne pas changer
-//    text      : "Le texte affiché."
-//  }
+//  Histoire d'un couple à la dynamique toxique. La jauge
+//  d'affinité représente l'attachement émotionnel du joueur
+//  envers Lou — pas un indicateur de relation "saine".
 //
-//  CHOIX :
-//  {
-//    id   : "nom_du_choix",
-//    type : "choice",
-//    choices: [
-//      { label: "Option A", next: "scene_a" },
-//      { label: "Option B", next: "scene_b" },
-//    ]
-//  }
+//  NOUVEAU : un narrateur extérieur (character:"Narrateur-ext")
+//  commente froidement certains moments, en contraste avec le
+//  vécu immédiat du joueur. Il est stylé différemment (italique,
+//  couleur grise/neutre) via la classe "narrator-mode".
 //
-// ============================================================
+//  ── DIALOGUE ──
+//  { id, type:"dialogue", character, image, background, text }
+//  → character:"Narrateur-ext" active le style narrateur
+//
+//  ── CHOIX ──
+//  { id, type:"choice", choices:[{label,next,affinity:{Lou:+-N}}] }
+//
+//  ── CONDITION ──
+//  { id, type:"condition", check:"Lou", branches:[
+//      {min:80, next:"..."}, {min:60, next:"..."}, ... , {min:0,next:"..."}
+//    ] }
+//    → on prend la première branche dont min <= valeur actuelle,
+//      en testant dans l'ordre décroissant.
+//
+//  ── FIN ──
+//  { id, type:"ending", ending:"clé_dans_ENDINGS",
+//    character, image, background, text }
+// ════════════════════════════════════════════════════════════
 
 const story = [
 
   // ── PROLOGUE ──────────────────────────────────────────────
   {
-    id: "prologue_nuit",
-    type: "dialogue",
-    character: "",
-    image: "",
-    background: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1280&q=80",
-    text: "Une nuit froide de novembre. La ville dort sous un ciel sans étoiles…"
+    id:"prologue_nuit", type:"dialogue",
+    character:"", image:"",
+    background:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1280&q=80",
+    text:"Une nuit froide de novembre. Le téléphone vibre pour la dixième fois en une heure."
   },
   {
-    id: "prologue_train",
-    type: "dialogue",
-    character: "Narrateur",
-    image: "",
-    background: "",
-    text: "Le train entre en gare à minuit pile. Sur le quai désert, une silhouette attend."
+    id:"prologue_narrateur", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Ce schéma vous est familier. Le message arrive toujours après un silence — jamais avant."
   },
 
-  // ── SCÈNE 1 ───────────────────────────────────────────────
+  // ── SCÈNE 1 — Retrouvailles intenses ────────────────────
   {
-    id: "elara_arrive",
-    type: "dialogue",
-    character: "Elara",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
-    text: "Vous êtes enfin là. J'ai failli ne plus y croire."
+    id:"lou_arrive", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
+    text:"Tu as encore mis du temps à répondre. J'ai cru que tu m'évitais."
   },
   {
-    id: "elara_mystere",
-    type: "dialogue",
-    character: "Elara",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background: "",
-    text: "Il y a des choses que je dois vous montrer. Des choses que personne d'autre ne peut voir."
+    id:"lou_reproche", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"",
+    text:"Tu sais que ça me fait flipper quand tu disparais comme ça. Personne d'autre ne me comprend comme toi. Tu le sais, hein ?"
+  },
+  {
+    id:"narrateur_1", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"« Personne ne me comprend comme toi. » La phrase est douce. Elle a aussi pour effet de rétrécir le monde à une seule personne."
   },
 
-  // ── CHOIX ─────────────────────────────────────────────────
+  // ── CHOIX 1 — affecte l'affinité ─────────────────────────
   {
-    id: "choix_1",
-    type: "choice",
-    choices: [
-      { label: "« Je vous suis. »",   next: "branche_a_debut" },
-      { label: "« Pourquoi moi ? »",  next: "branche_b_debut" },
+    id:"choix_1", type:"choice",
+    choices:[
+      { label:"« Pardon… je vais faire attention, promis. »", next:"apres_choix_1", affinity:{ Lou:+15 } },
+      { label:"« Je ne te dois pas d'explication pour chaque silence. »", next:"apres_choix_1", affinity:{ Lou:-15 } },
+      { label:"« Désolé, j'étais occupé, c'est tout. »", next:"apres_choix_1", affinity:{ Lou:+3 } },
     ]
   },
 
-  // ── BRANCHE A ─────────────────────────────────────────────
   {
-    id: "branche_a_debut",
-    type: "dialogue",
-    character: "Elara",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
-    text: "Bien. La nuit n'attend pas. Suivez-moi sans bruit."
-  },
-  {
-    id: "branche_a_fin",
-    type: "dialogue",
-    character: "Elara",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background: "",
-    text: "Vous avez fait le bon choix. Vous verrez bientôt pourquoi."
-  },
-  {
-    id: "fin_a",
-    type: "dialogue",
-    character: "Narrateur",
-    image: "",
-    background: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1280&q=80",
-    text: "— FIN DU CHAPITRE 1 —\n\nMerci d'avoir joué !"
+    id:"apres_choix_1", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Une réponse, et déjà la tonalité de toute la soirée vient de se décider."
   },
 
-  // ── BRANCHE B ─────────────────────────────────────────────
+  // ── DEUXIÈME TEMPS — accentue ou tempère la dynamique ────
   {
-    id: "branche_b_debut",
-    type: "dialogue",
-    character: "Elara",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background: "https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
-    text: "Parce que vous êtes le seul à pouvoir encore changer ce qui va arriver."
+    id:"lou_second_temps", type:"dialogue",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
+    text:"De toute façon, tu sais que je dis ça parce que je tiens à toi. Personne ne tiendrait à toi comme moi."
   },
   {
-    id: "branche_b_suite",
-    type: "dialogue",
-    character: "Elara",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
-    background: "",
-    text: "Je sais que c'est difficile à croire. Mais le temps presse. Venez."
+    id:"choix_2", type:"choice",
+    choices:[
+      { label:"« Je sais, et moi aussi je tiens à toi. »", next:"resolution", affinity:{ Lou:+20 } },
+      { label:"« Tu dis ça à chaque fois qu'on se dispute. »", next:"resolution", affinity:{ Lou:-20 } },
+      { label:"Rester silencieux.", next:"resolution", affinity:{ Lou:-5 } },
+    ]
+  },
+
+  // ── RÉSOLUTION : branchement selon affinité cumulée ──────
+  //  5 paliers → 5 fins
+  //  80-100 : fusion totale
+  //  60-79  : emprise qui se resserre
+  //  40-59  : trêve fragile
+  //  20-39  : la dispute éclate
+  //  0-19   : rupture
+  {
+    id:"resolution", type:"condition",
+    check:"Lou",
+    branches:[
+      { min:80, next:"fin_fusion"  },
+      { min:60, next:"fin_emprise" },
+      { min:40, next:"fin_tension" },
+      { min:20, next:"fin_conflit" },
+      { min:0,  next:"fin_rupture" },
+    ]
+  },
+
+  // ── FIN 1 : FUSION TOTALE (80-100) ───────────────────────
+  {
+    id:"narrateur_fusion", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Vous avez dit oui à tout. Chaque fois. Ce soir, Lou dort apaisé. Vous, beaucoup moins."
   },
   {
-    id: "fin_b",
-    type: "dialogue",
-    character: "Narrateur",
-    image: "",
-    background: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1280&q=80",
-    text: "— FIN DU CHAPITRE 1 —\n\nMerci d'avoir joué !"
+    id:"fin_fusion", type:"ending", ending:"fusion",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
+    text:"Tu vois ? Quand tu es comme ça, tout est parfait entre nous. Ne change jamais, d'accord ?\n\n— FIN DU CHAPITRE 1 —"
+  },
+
+  // ── FIN 2 : EMPRISE (60-79) ───────────────────────────────
+  {
+    id:"narrateur_emprise", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Vous avez cédé l'essentiel, tout en gardant l'impression de garder un peu de terrain. Lou aussi a cette impression — la sienne."
+  },
+  {
+    id:"fin_emprise", type:"ending", ending:"emprise",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1280&q=80",
+    text:"…Merci de comprendre. C'est pour ça qu'on est différents des autres couples.\n\nViens là. On oublie tout ça. Juste toi et moi, comme d'habitude.\n\n— FIN DU CHAPITRE 1 —"
+  },
+
+  // ── FIN 3 : TRÊVE FRAGILE (40-59) ─────────────────────────
+  {
+    id:"narrateur_tension", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Ni vous ni Lou n'avez vraiment cédé. Le sujet est simplement remis à plus tard — comme toujours."
+  },
+  {
+    id:"fin_tension", type:"ending", ending:"tension",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
+    text:"Mouais. Si tu veux. On verra si tu dis pareil la prochaine fois.\n\n(Un silence pesant s'installe entre vous.)\n\n— FIN DU CHAPITRE 1 —"
+  },
+
+  // ── FIN 4 : CONFLIT (20-39) ────────────────────────────────
+  {
+    id:"narrateur_conflit", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Vous avez résisté plus que d'habitude. Lou ne sait pas encore comment réagir face à ça — alors la colère monte."
+  },
+  {
+    id:"fin_conflit", type:"ending", ending:"conflit",
+    character:"Lou",
+    image:"https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+    background:"https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1280&q=80",
+    text:"Ah, super. Donc c'est comme ça maintenant.\n\nTu sais quoi, fais comme tu veux. Mais ne viens pas pleurer quand il n'y aura plus personne.\n\n— FIN DU CHAPITRE 1 —"
+  },
+
+  // ── FIN 5 : RUPTURE (0-19) ─────────────────────────────────
+  {
+    id:"narrateur_rupture", type:"dialogue",
+    character:"Narrateur-ext", image:"", background:"",
+    text:"Pour la première fois ce soir, vous n'avez rien cédé. Le silence qui suit n'est pas confortable. Mais il vous appartient."
+  },
+  {
+    id:"fin_rupture", type:"ending", ending:"rupture",
+    character:"", image:"",
+    background:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1280&q=80",
+    text:"Aucune réponse de Lou ce soir-là.\n\nPour une fois, le silence est le vôtre.\n\n— FIN DU CHAPITRE 1 —"
   },
 ];
 
-// ============================================================
-//  MOTEUR — ne touche pas à cette partie
-// ============================================================
+// ════════════════════════════════════════════════════════════
+//  ARBRE DES BRANCHES — pour le récap visuel
+//
+//  Décrit la structure narrative (indépendamment de l'état)
+//  afin de dessiner le diagramme : chaque nœud a une position
+//  et des liens vers ses enfants. "endingKey" relie un nœud
+//  feuille à une clé de ENDINGS.
+// ════════════════════════════════════════════════════════════
+const DECISION_TREE = {
+  nodes:[
+    { id:"start",   label:"Début",                x:60,  y:210 },
 
-// Table id → index
+    // Choix 1
+    { id:"c1_a", label:"« Pardon, promis »",        x:300, y:60  },
+    { id:"c1_b", label:"« Je ne te dois rien »",     x:300, y:210 },
+    { id:"c1_c", label:"« J'étais occupé »",         x:300, y:360 },
+
+    // Choix 2 (regroupé après choix 1 pour la lisibilité)
+    { id:"c2_a", label:"« Moi aussi je tiens à toi »", x:560, y:30  },
+    { id:"c2_b", label:"« Tu dis ça à chaque fois »",  x:560, y:135 },
+    { id:"c2_c", label:"Rester silencieux",            x:560, y:240 },
+    { id:"c2_x", label:"(suite du choix 2)",           x:560, y:345 },
+
+    // Fins
+    { id:"fin_fusion",  label:"Fusion totale",     x:860, y:20,  ending:"fusion"  },
+    { id:"fin_emprise", label:"Le cercle se resserre", x:860, y:110, ending:"emprise" },
+    { id:"fin_tension", label:"Trêve fragile",     x:860, y:200, ending:"tension" },
+    { id:"fin_conflit", label:"La dispute éclate", x:860, y:290, ending:"conflit" },
+    { id:"fin_rupture", label:"La porte se ferme", x:860, y:380, ending:"rupture" },
+  ],
+  links:[
+    ["start","c1_a"], ["start","c1_b"], ["start","c1_c"],
+    ["c1_a","c2_a"], ["c1_a","c2_b"], ["c1_a","c2_c"],
+    ["c1_b","c2_a"], ["c1_b","c2_b"], ["c1_b","c2_c"],
+    ["c1_c","c2_a"], ["c1_c","c2_b"], ["c1_c","c2_c"],
+    // chaque c2_* peut mener à plusieurs fins selon score cumulé —
+    // on relie vers les fins de façon générale (le chemin réel
+    // est mis en évidence dynamiquement)
+    ["c2_a","fin_fusion"], ["c2_a","fin_emprise"],
+    ["c2_b","fin_tension"], ["c2_b","fin_conflit"], ["c2_b","fin_rupture"],
+    ["c2_c","fin_tension"], ["c2_c","fin_conflit"], ["c2_c","fin_rupture"],
+  ]
+};
+
+// Map "choix fait" (label exact) → id de nœud dans l'arbre
+const CHOICE_TO_NODE = {
+  "« Pardon… je vais faire attention, promis. »": "c1_a",
+  "« Je ne te dois pas d'explication pour chaque silence. »": "c1_b",
+  "« Désolé, j'étais occupé, c'est tout. »": "c1_c",
+  "« Je sais, et moi aussi je tiens à toi. »": "c2_a",
+  "« Tu dis ça à chaque fois qu'on se dispute. »": "c2_b",
+  "Rester silencieux.": "c2_c",
+};
+
+// ════════════════════════════════════════════════════════════
+//  MOTEUR
+// ════════════════════════════════════════════════════════════
+
+// Index id → position dans story[]
 const idMap = {};
-story.forEach((s,i) => { if(s.id) idMap[s.id] = i; });
+story.forEach((s,i) => { if(s.id) idMap[s.id]=i; });
 
-const state = { index:0, autoMode:false, autoTimer:null, typeTimer:null, isTyping:false, log:[] };
+// État du jeu
+const state = {
+  index:0, autoMode:false, autoTimer:null, typeTimer:null, isTyping:false, log:[],
+  affinity: Object.fromEntries(Object.entries(CHARACTERS).map(([k,v])=>[k,v.start])),
+  choicePath: [],   // liste des labels de choix sélectionnés (dans l'ordre)
+  endingKey: null,  // clé dans ENDINGS une fois la fin atteinte
+};
 
-// ── Helpers DOM ──
-const el = id => document.getElementById(id);
-const bg      = el('background');
-const charCon = el('character-container');
-const charImg = el('character-img');
-const dBox    = el('dialogue-box');
-const dName   = el('character-name');
-const dText   = el('dialogue-text');
-const dArrow  = el('next-arrow');
-const dChoice = el('choices-container');
-const logPanel= el('log-panel');
-const logList = el('log-entries');
-const btnAuto = el('btn-auto');
-const btnSave = el('btn-save');
-const btnLoad = el('btn-load');
+// ── DOM ──
+const el       = id => document.getElementById(id);
+const bg       = el('background');
+const charCon  = el('character-container');
+const charImg  = el('character-img');
+const dBox     = el('dialogue-box');
+const dName    = el('character-name');
+const dText    = el('dialogue-text');
+const dArrow   = el('next-arrow');
+const dChoice  = el('choices-container');
+const logPanel = el('log-panel');
+const logList  = el('log-entries');
+const btnAuto  = el('btn-auto');
+const btnSave  = el('btn-save');
+const btnLoad  = el('btn-load');
+const affPanel = el('affinity-panel');
+const toast    = el('aff-toast');
+const summaryScreen = el('summary-screen');
+const summaryTree   = el('summary-tree');
+
+// ── Jauge d'affinité ──
+
+function buildAffinityUI(){
+  affPanel.innerHTML='';
+  Object.entries(CHARACTERS).forEach(([key,cfg])=>{
+    const row=document.createElement('div');
+    row.className='aff-row';
+    row.id='aff-row-'+key;
+    row.innerHTML=`
+      <span class="aff-heart">${cfg.heart}</span>
+      <span class="aff-name">${cfg.label}</span>
+      <div class="aff-bar-wrap"><div class="aff-bar" id="aff-bar-${key}"></div></div>
+      <span class="aff-val" id="aff-val-${key}"></span>`;
+    affPanel.appendChild(row);
+  });
+  refreshAffinityUI();
+}
+
+function barColor(pct){
+  if(pct<25) return '#e05050';
+  if(pct<50) return '#cc8840';
+  if(pct<75) return '#a08cff';
+  return '#7fdc8a';
+}
+
+function refreshAffinityUI(){
+  Object.entries(CHARACTERS).forEach(([key,cfg])=>{
+    const val=state.affinity[key];
+    const pct=Math.round(((val-cfg.min)/(cfg.max-cfg.min))*100);
+    const bar=document.getElementById('aff-bar-'+key);
+    const valEl=document.getElementById('aff-val-'+key);
+    if(bar){ bar.style.width=pct+'%'; bar.style.background=barColor(pct); }
+    if(valEl) valEl.textContent=val;
+  });
+}
+
+let toastTimer=null;
+function showToast(msg){
+  toast.textContent=msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),2200);
+}
+
+function applyAffinity(affObj){
+  if(!affObj) return;
+  Object.entries(affObj).forEach(([key,delta])=>{
+    if(!(key in state.affinity)) return;
+    const cfg=CHARACTERS[key];
+    const before=state.affinity[key];
+    state.affinity[key]=Math.max(cfg.min, Math.min(cfg.max, before+delta));
+    const diff=state.affinity[key]-before;
+    if(diff>0) showToast(`♥ ${cfg.label} +${diff}`);
+    else if(diff<0) showToast(`♡ ${cfg.label} ${diff}`);
+  });
+  refreshAffinityUI();
+}
 
 // ── Navigation ──
 function go(indexOrId){
@@ -512,24 +609,25 @@ function go(indexOrId){
   if(idx===undefined||idx>=story.length) return;
   state.index=idx;
   const s=story[idx];
-  if(s.type==='dialogue') showDialogue(s);
-  if(s.type==='choice')   showChoices(s);
+  if(s.type==='dialogue')  showDialogue(s);
+  if(s.type==='choice')    showChoices(s);
+  if(s.type==='condition') resolveCondition(s);
+  if(s.type==='ending')    showEnding(s);
 }
 
 function showDialogue(s){
   dChoice.classList.add('hidden');
   dArrow.style.display='';
   if(s.background) bg.style.backgroundImage=`url('${s.background}')`;
-  if(s.image){
-    charImg.src=s.image;
-    charCon.style.display='';
-    charImg.className='fi';
-  } else {
-    charCon.style.display='none';
-  }
-  dName.textContent=s.character||'';
+  if(s.image){ charImg.src=s.image; charCon.style.display=''; charImg.className='fi'; }
+  else { charCon.style.display='none'; }
+
+  const isNarrator = s.character === 'Narrateur-ext';
+  dBox.classList.toggle('narrator-mode', isNarrator);
+  dName.textContent = isNarrator ? 'Voix extérieure' : (s.character||'');
+
   typeText(s.text,()=>{ if(state.autoMode) state.autoTimer=setTimeout(advance,2200); });
-  if(s.text) state.log.push({name:s.character||'Narrateur',line:s.text});
+  if(s.text) state.log.push({name: isNarrator ? 'Voix extérieure' : (s.character||'Narrateur'), line:s.text, narrator:isNarrator});
 }
 
 function showChoices(s){
@@ -538,9 +636,42 @@ function showChoices(s){
   dChoice.classList.remove('hidden');
   s.choices.forEach(c=>{
     const b=document.createElement('button');
-    b.className='choice-btn';b.textContent=c.label;
-    b.onclick=()=>{ dChoice.classList.add('hidden'); go(c.next); };
+    b.className='choice-btn';
+    b.textContent=c.label;
+    b.onclick=()=>{
+      dChoice.classList.add('hidden');
+      applyAffinity(c.affinity);
+      state.choicePath.push(c.label);
+      go(c.next);
+    };
     dChoice.appendChild(b);
+  });
+}
+
+// Résolution d'un nœud conditionnel à branches multiples
+function resolveCondition(s){
+  const val=state.affinity[s.check]??50;
+  for(const branch of s.branches){
+    if(val>=branch.min){ go(branch.next); return; }
+  }
+  // fallback : dernière branche
+  go(s.branches[s.branches.length-1].next);
+}
+
+// Affiche la scène de fin, puis programme l'ouverture du bilan
+function showEnding(s){
+  state.endingKey = s.ending;
+  dChoice.classList.add('hidden');
+  dArrow.style.display='';
+  if(s.background) bg.style.backgroundImage=`url('${s.background}')`;
+  if(s.image){ charImg.src=s.image; charCon.style.display=''; charImg.className='fi'; }
+  else { charCon.style.display='none'; }
+  dBox.classList.remove('narrator-mode');
+  dName.textContent=s.character||'';
+  typeText(s.text, ()=>{
+    state.log.push({name:s.character||'Narrateur', line:s.text, narrator:false});
+    // après un court délai, ouvrir le bilan
+    setTimeout(openSummary, 1400);
   });
 }
 
@@ -558,13 +689,11 @@ function typeText(text,onDone){
 function advance(){
   if(state.isTyping){
     const s=story[state.index];
-    if(s?.type==='dialogue'){
-      clearTimeout(state.typeTimer);
-      state.isTyping=false;
-      dText.textContent=s.text;
-    }
+    if(s?.type==='dialogue' || s?.type==='ending'){ clearTimeout(state.typeTimer); state.isTyping=false; dText.textContent=s.text; }
     return;
   }
+  const s = story[state.index];
+  if(s?.type==='ending') return; // on attend l'ouverture automatique du bilan
   const next=state.index+1;
   if(next<story.length) go(next);
 }
@@ -573,7 +702,8 @@ function advance(){
 function openLog(){
   logList.innerHTML='';
   state.log.forEach(e=>{
-    const d=document.createElement('div');d.className='log-entry';
+    const d=document.createElement('div');
+    d.className='log-entry'+(e.narrator?' is-narrator':'');
     d.innerHTML=`<span class="log-name">${e.name}</span><span class="log-line">${e.line}</span>`;
     logList.appendChild(d);
   });
@@ -581,33 +711,143 @@ function openLog(){
 }
 
 // ── Save / Load ──
-function flash(btn,msg){
-  const o=btn.textContent; btn.textContent=msg;
-  setTimeout(()=>{btn.textContent=o;},1500);
-}
+function flash(btn,msg){ const o=btn.textContent; btn.textContent=msg; setTimeout(()=>{btn.textContent=o;},1500); }
+
 function saveGame(){
-  try{ localStorage.setItem('vn_save',JSON.stringify({index:state.index,log:[...state.log]})); flash(btnSave,'Sauvegardé ✓'); }
-  catch{ alert('Impossible de sauvegarder.'); }
+  try{
+    localStorage.setItem('vn_save',JSON.stringify({
+      index:state.index, log:[...state.log], affinity:{...state.affinity},
+      choicePath:[...state.choicePath], endingKey:state.endingKey
+    }));
+    flash(btnSave,'Sauvegardé ✓');
+  } catch{ alert('Impossible de sauvegarder.'); }
 }
+
 function loadGame(){
   try{
     const r=localStorage.getItem('vn_save');
     if(!r){alert('Aucune sauvegarde.');return;}
-    const sl=JSON.parse(r); state.log=sl.log||[]; go(sl.index); flash(btnLoad,'Chargé ✓');
+    const sl=JSON.parse(r);
+    state.log=sl.log||[];
+    if(sl.affinity) Object.assign(state.affinity,sl.affinity);
+    state.choicePath = sl.choicePath || [];
+    state.endingKey = sl.endingKey || null;
+    refreshAffinityUI();
+    go(sl.index);
+    flash(btnLoad,'Chargé ✓');
   } catch{ alert('Erreur chargement.'); }
+}
+
+// ════════════════════════════════════════════════════════════
+//  ÉCRAN RÉCAPITULATIF — diagramme d'arbre (style Detroit: BH)
+// ════════════════════════════════════════════════════════════
+
+function openSummary(){
+  el('game-screen').classList.add('hidden');
+  drawDecisionTree();
+  showEndingInfo();
+  summaryScreen.classList.remove('hidden');
+}
+
+function showEndingInfo(){
+  const key = state.endingKey;
+  const data = ENDINGS[key];
+  el('summary-ending-name').textContent = data ? data.title : "Fin inconnue";
+  el('summary-ending-desc').textContent = data ? data.desc : "";
+  const aff = state.affinity.Lou;
+  el('summary-ending-aff').textContent = `Affinité finale avec Lou : ${aff} / 100`;
+}
+
+// Construit le chemin de nœuds parcourus dans l'arbre, à partir
+// de state.choicePath + state.endingKey
+function getTraversedNodeIds(){
+  const ids = ['start'];
+  state.choicePath.forEach(label=>{
+    const nodeId = CHOICE_TO_NODE[label];
+    if(nodeId) ids.push(nodeId);
+  });
+  // dernier nœud = la fin
+  const endingNodeId = DECISION_TREE.nodes.find(n=>n.ending===state.endingKey)?.id;
+  if(endingNodeId) ids.push(endingNodeId);
+  return ids;
+}
+
+function drawDecisionTree(){
+  const traversed = getTraversedNodeIds();
+  const traversedSet = new Set(traversed);
+
+  // Construire un set des liens parcourus (paires consécutives)
+  const traversedLinks = new Set();
+  for(let i=0;i<traversed.length-1;i++){
+    traversedLinks.add(traversed[i]+'->'+traversed[i+1]);
+  }
+
+  const nodeById = Object.fromEntries(DECISION_TREE.nodes.map(n=>[n.id,n]));
+
+  let svg = '';
+
+  // ── Liens ──
+  DECISION_TREE.links.forEach(([from,to])=>{
+    const a = nodeById[from], b = nodeById[to];
+    const isTraversed = traversedLinks.has(from+'->'+to);
+    const midX = (a.x + b.x)/2;
+    const path = `M ${a.x+90} ${a.y+14} C ${midX} ${a.y+14}, ${midX} ${b.y+14}, ${b.x} ${b.y+14}`;
+    svg += `<path d="${path}" fill="none"
+      stroke="${isTraversed ? '#b89fff' : 'rgba(180,160,255,0.15)'}"
+      stroke-width="${isTraversed ? 2.5 : 1.5}"
+      ${isTraversed ? '' : 'stroke-dasharray="3,4"'}
+    />`;
+  });
+
+  // ── Nœuds ──
+  DECISION_TREE.nodes.forEach(n=>{
+    const isTraversed = traversedSet.has(n.id);
+    const isEnding = !!n.ending;
+    const isFinalEnding = n.ending === state.endingKey;
+
+    let fill, stroke, textColor;
+    if(isFinalEnding){ fill='rgba(184,159,255,0.22)'; stroke='#b89fff'; textColor='#ede9ff'; }
+    else if(isTraversed){ fill='rgba(184,159,255,0.10)'; stroke='#7c5ccc'; textColor='#d4c5ff'; }
+    else { fill='rgba(255,255,255,0.02)'; stroke='rgba(180,160,255,0.18)'; textColor='#6e6590'; }
+
+    const w = isEnding ? 130 : 180;
+    const h = 38;
+
+    svg += `<g>
+      <rect x="${n.x}" y="${n.y}" width="${w}" height="${h}" rx="8"
+        fill="${fill}" stroke="${stroke}" stroke-width="${isFinalEnding?2.5:1.3}"/>
+      <text x="${n.x + w/2}" y="${n.y + h/2 + 4}" text-anchor="middle"
+        font-size="${isEnding?'11':'10.5'}" font-family="Segoe UI, sans-serif"
+        fill="${textColor}" font-style="${isEnding?'italic':'normal'}"
+        font-weight="${isFinalEnding?'600':'400'}">
+        ${escapeXml(n.label)}
+      </text>
+    </g>`;
+
+    if(isFinalEnding){
+      // petit marqueur "vous êtes ici"
+      svg += `<text x="${n.x + w/2}" y="${n.y - 8}" text-anchor="middle"
+        font-size="10" font-family="Segoe UI, sans-serif" fill="#b89fff"
+        letter-spacing="1px">VOTRE FIN</text>`;
+    }
+  });
+
+  summaryTree.innerHTML = svg;
+}
+
+function escapeXml(str){
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 // ── Événements ──
 el('btn-start').onclick=()=>{
   el('title-screen').classList.add('hidden');
   el('game-screen').classList.remove('hidden');
+  buildAffinityUI();
   go(0);
 };
 
-dBox.onclick=()=>{
-  if(!dChoice.classList.contains('hidden')) return;
-  clearTimeout(state.autoTimer); advance();
-};
+dBox.onclick=()=>{ if(!dChoice.classList.contains('hidden')) return; clearTimeout(state.autoTimer); advance(); };
 
 document.onkeydown=e=>{
   if(!['Space','ArrowRight','Enter'].includes(e.code)) return;
@@ -628,6 +868,19 @@ el('btn-log').onclick=openLog;
 el('btn-close-log').onclick=()=>logPanel.classList.add('hidden');
 btnSave.onclick=saveGame;
 btnLoad.onclick=loadGame;
+
+el('btn-summary-continue').onclick=()=>{
+  // Réinitialise et revient à l'écran titre
+  state.index=0;
+  state.autoMode=false;
+  state.log=[];
+  state.choicePath=[];
+  state.endingKey=null;
+  Object.entries(CHARACTERS).forEach(([k,v])=>state.affinity[k]=v.start);
+  refreshAffinityUI();
+  summaryScreen.classList.add('hidden');
+  el('title-screen').classList.remove('hidden');
+};
 </script>
 </body>
 </html>
