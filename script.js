@@ -4,26 +4,31 @@
 
 // ── 1. SCÉNARIO ─────────────────────────────────────────────
 //
-//  Chaque entrée du tableau `story` peut être :
+//  Chaque entrée a un ID unique (id: "nom_scene") que tu choisis toi-même.
+//  Pour les choix, utilise cet ID dans "next" — plus besoin de compter les lignes !
 //
-//  { type: "dialogue",
-//    character : "Nom affiché",           ← laisser "" pour narrateur
-//    image     : "URL de l'image PNG",    ← laisser "" pour pas de perso
-//    background: "URL de l'image fond",   ← laisser "" pour ne pas changer
+//  { id: "nom_de_la_scene",   ← identifiant unique, tu mets ce que tu veux
+//    type: "dialogue",
+//    character : "Nom affiché",           ← "" pour narrateur
+//    image     : "URL image personnage",  ← "" pour aucun personnage
+//    background: "URL image fond",        ← "" pour ne pas changer le fond
 //    text      : "Texte affiché" }
 //
-//  { type: "choice",
+//  { id: "mon_choix",
+//    type: "choice",
 //    choices: [
-//      { label: "Option A", next: 5 },    ← next = index dans story[]
-//      { label: "Option B", next: 8 },
+//      { label: "Option A", next: "scene_a" },   ← next = id d'une autre scène
+//      { label: "Option B", next: "scene_b" },
 //    ]}
 //
 // ============================================================
 
 const story = [
 
-  // ── PROLOGUE ──
+  // ── PROLOGUE ──────────────────────────────────────────────
+
   {
+    id: "prologue_nuit",
     type: "dialogue",
     character: "",
     image: "",
@@ -31,6 +36,7 @@ const story = [
     text: "Une nuit froide de novembre. La ville dort sous un ciel sans étoiles…"
   },
   {
+    id: "prologue_train",
     type: "dialogue",
     character: "Narrateur",
     image: "",
@@ -38,8 +44,10 @@ const story = [
     text: "Le train entre en gare à minuit pile. Sur le quai désert, une silhouette attend."
   },
 
-  // ── SCÈNE 1 ──
+  // ── SCÈNE 1 ───────────────────────────────────────────────
+
   {
+    id: "elara_arrive",
     type: "dialogue",
     character: "Elara",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
@@ -47,6 +55,7 @@ const story = [
     text: "Vous êtes enfin là. J'ai failli ne plus y croire."
   },
   {
+    id: "elara_mystere",
     type: "dialogue",
     character: "Elara",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
@@ -54,17 +63,21 @@ const story = [
     text: "Il y a des choses que je dois vous montrer. Des choses que personne d'autre ne peut voir."
   },
 
-  // ── CHOIX ──
+  // ── CHOIX ─────────────────────────────────────────────────
+
   {
+    id: "choix_1",
     type: "choice",
     choices: [
-      { label: "« Je vous suis. »",            next: 5 },
-      { label: "« Pourquoi moi ? »",           next: 7 },
+      { label: "« Je vous suis. »",   next: "branche_a_suite" },
+      { label: "« Pourquoi moi ? »",  next: "branche_b_question" },
     ]
   },
 
-  // ── BRANCHE A ──
+  // ── BRANCHE A : "Je vous suis" ────────────────────────────
+
   {
+    id: "branche_a_suite",
     type: "dialogue",
     character: "Elara",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
@@ -72,6 +85,7 @@ const story = [
     text: "Bien. La nuit n'attend pas. Suivez-moi sans bruit."
   },
   {
+    id: "branche_a_fin",
     type: "dialogue",
     character: "Elara",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
@@ -79,6 +93,7 @@ const story = [
     text: "Vous avez fait le bon choix. Vous verrez bientôt pourquoi."
   },
   {
+    id: "fin_chapitre_a",
     type: "dialogue",
     character: "Narrateur",
     image: "",
@@ -86,8 +101,10 @@ const story = [
     text: "— FIN DU CHAPITRE 1 —\n\nMerci d'avoir joué ! Ajoutez vos propres scènes dans story[] pour continuer l'aventure."
   },
 
-  // ── BRANCHE B ──
+  // ── BRANCHE B : "Pourquoi moi ?" ─────────────────────────
+
   {
+    id: "branche_b_question",
     type: "dialogue",
     character: "Elara",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
@@ -95,6 +112,7 @@ const story = [
     text: "Parce que vous êtes le seul à pouvoir encore changer ce qui va arriver."
   },
   {
+    id: "branche_b_suite",
     type: "dialogue",
     character: "Elara",
     image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
@@ -102,6 +120,7 @@ const story = [
     text: "Je sais que c'est difficile à croire. Mais le temps presse. Venez."
   },
   {
+    id: "fin_chapitre_b",
     type: "dialogue",
     character: "Narrateur",
     image: "",
@@ -111,63 +130,65 @@ const story = [
 ];
 
 
-// ── 2. ÉTAT DU JEU ──────────────────────────────────────────
+// ============================================================
+//  MOTEUR — ne pas modifier sauf si tu sais ce que tu fais
+// ============================================================
+
+// Index par ID pour retrouver une scène rapidement
+const storyIndex = {};
+story.forEach((step, i) => { if (step.id) storyIndex[step.id] = i; });
 
 const state = {
-  index     : 0,
-  autoMode  : false,
-  autoTimer : null,
-  isTyping  : false,
-  log       : [],           // historique des dialogues
-  saves     : [],           // sauvegardes
+  index    : 0,
+  autoMode : false,
+  autoTimer: null,
+  isTyping : false,
+  log      : [],
 };
 
+// ── DOM (résolu après chargement complet) ──
+let dom = {};
 
-// ── 3. RÉFÉRENCES DOM ──────────────────────────────────────
+function initDOM() {
+  const g = id => document.getElementById(id);
+  dom = {
+    titleScreen  : g("title-screen"),
+    gameScreen   : g("game-screen"),
+    background   : g("background"),
+    charImg      : g("character-img"),
+    charContainer: g("character-container"),
+    dialogueBox  : g("dialogue-box"),
+    charName     : g("character-name"),
+    dialogueText : g("dialogue-text"),
+    nextArrow    : g("next-arrow"),
+    choices      : g("choices-container"),
+    logPanel     : g("log-panel"),
+    logEntries   : g("log-entries"),
+    btnAuto      : g("btn-auto"),
+    btnSave      : g("btn-save"),
+    btnLoad      : g("btn-load"),
+  };
+}
 
-const $ = id => document.getElementById(id);
+// ── Navigation ──
 
-const dom = {
-  titleScreen  : $("title-screen"),
-  gameScreen   : $("game-screen"),
-  background   : $("background"),
-  charImg      : $("character-img"),
-  charContainer: $("character-container"),
-  dialogueBox  : $("dialogue-box"),
-  charName     : $("character-name"),
-  dialogueText : $("dialogue-text"),
-  nextArrow    : $("next-arrow"),
-  choices      : $("choices-container"),
-  logPanel     : $("log-panel"),
-  logEntries   : $("log-entries"),
-  btnAuto      : $("btn-auto"),
-  btnSkip      : $("btn-skip"),
-};
-
-
-// ── 4. MOTEUR ───────────────────────────────────────────────
-
-/** Affiche l'entrée story[index] */
-function showStep(index) {
-  if (index >= story.length) return;
-  state.index = index;
-  const step = story[index];
-
+function showStep(indexOrId) {
+  const idx = typeof indexOrId === "string" ? storyIndex[indexOrId] : indexOrId;
+  if (idx === undefined || idx >= story.length) return;
+  state.index = idx;
+  const step = story[idx];
   if (step.type === "dialogue") showDialogue(step);
   if (step.type === "choice")   showChoices(step);
 }
 
-/** Dialogue */
 function showDialogue(step) {
   dom.choices.classList.add("hidden");
   dom.nextArrow.style.display = "";
 
-  // Arrière-plan
   if (step.background) {
     dom.background.style.backgroundImage = `url('${step.background}')`;
   }
 
-  // Personnage
   if (step.image) {
     dom.charImg.src = step.image;
     dom.charContainer.style.display = "";
@@ -176,21 +197,14 @@ function showDialogue(step) {
     dom.charContainer.style.display = "none";
   }
 
-  // Nom
   dom.charName.textContent = step.character || "";
-
-  // Texte avec effet machine à écrire
   typeText(step.text, () => {
     if (state.autoMode) state.autoTimer = setTimeout(advance, 2200);
   });
 
-  // Journal
-  if (step.text) {
-    state.log.push({ name: step.character || "Narrateur", line: step.text });
-  }
+  if (step.text) state.log.push({ name: step.character || "Narrateur", line: step.text });
 }
 
-/** Choix */
 function showChoices(step) {
   dom.nextArrow.style.display = "none";
   dom.choices.innerHTML = "";
@@ -208,65 +222,48 @@ function showChoices(step) {
   });
 }
 
-/** Effet machine à écrire */
 function typeText(text, onDone) {
   state.isTyping = true;
   dom.dialogueText.textContent = "";
   let i = 0;
-  const speed = 28; // ms par caractère
-
-  function tick() {
-    if (i >= text.length) {
-      state.isTyping = false;
-      if (onDone) onDone();
-      return;
-    }
+  const tick = () => {
+    if (i >= text.length) { state.isTyping = false; if (onDone) onDone(); return; }
     dom.dialogueText.textContent += text[i++];
-    setTimeout(tick, speed);
-  }
+    setTimeout(tick, 28);
+  };
   tick();
 }
 
-/** Avancer ou compléter le texte */
 function advance() {
   if (state.isTyping) {
-    // Compléter immédiatement le texte en cours
     const step = story[state.index];
-    if (step?.type === "dialogue") {
-      state.isTyping = false;
-      dom.dialogueText.textContent = step.text;
-    }
+    if (step?.type === "dialogue") { state.isTyping = false; dom.dialogueText.textContent = step.text; }
     return;
   }
-
   const next = state.index + 1;
   if (next < story.length) showStep(next);
 }
 
-
-// ── 5. JOURNAL ──────────────────────────────────────────────
+// ── Journal ──
 
 function openLog() {
   dom.logEntries.innerHTML = "";
   state.log.forEach(entry => {
     const div = document.createElement("div");
     div.className = "log-entry";
-    div.innerHTML = `<span class="log-name">${entry.name}</span>
-                     <span class="log-line">${entry.line}</span>`;
+    div.innerHTML = `<span class="log-name">${entry.name}</span><span class="log-line">${entry.line}</span>`;
     dom.logEntries.appendChild(div);
   });
   dom.logPanel.classList.remove("hidden");
 }
 
-
-// ── 6. SAUVEGARDE / CHARGEMENT ──────────────────────────────
+// ── Sauvegarde ──
 
 function saveGame() {
-  const slot = { index: state.index, log: [...state.log] };
   try {
-    localStorage.setItem("vn_save", JSON.stringify(slot));
+    localStorage.setItem("vn_save", JSON.stringify({ index: state.index, log: [...state.log] }));
     flash(dom.btnSave, "Sauvegardé ✓");
-  } catch { alert("Impossible de sauvegarder (localStorage non disponible)."); }
+  } catch { alert("Impossible de sauvegarder."); }
 }
 
 function loadGame() {
@@ -276,7 +273,7 @@ function loadGame() {
     const slot = JSON.parse(raw);
     state.log = slot.log || [];
     showStep(slot.index);
-    flash($("btn-load"), "Chargé ✓");
+    flash(dom.btnLoad, "Chargé ✓");
   } catch { alert("Erreur lors du chargement."); }
 }
 
@@ -286,44 +283,46 @@ function flash(btn, msg) {
   setTimeout(() => { btn.textContent = orig; }, 1500);
 }
 
+// ── Init au chargement ──
 
-// ── 7. ÉVÉNEMENTS ───────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  initDOM();
 
-$("btn-start").addEventListener("click", () => {
-  dom.titleScreen.classList.add("hidden");
-  dom.gameScreen.classList.remove("hidden");
-  showStep(0);
-});
+  document.getElementById("btn-start").addEventListener("click", () => {
+    dom.titleScreen.classList.add("hidden");
+    dom.gameScreen.classList.remove("hidden");
+    showStep(0);
+  });
 
-dom.dialogueBox.addEventListener("click", () => {
-  if (!dom.choices.classList.contains("hidden")) return; // ignorer si choix visibles
-  clearTimeout(state.autoTimer);
-  advance();
-});
+  dom.dialogueBox.addEventListener("click", () => {
+    if (!dom.choices.classList.contains("hidden")) return;
+    clearTimeout(state.autoTimer);
+    advance();
+  });
 
-document.addEventListener("keydown", e => {
-  if (e.code === "Space" || e.code === "ArrowRight" || e.code === "Enter") {
+  document.addEventListener("keydown", e => {
+    if (!["Space","ArrowRight","Enter"].includes(e.code)) return;
     if (dom.gameScreen.classList.contains("hidden")) return;
     if (!dom.choices.classList.contains("hidden")) return;
     clearTimeout(state.autoTimer);
     advance();
-  }
-});
+  });
 
-dom.btnAuto.addEventListener("click", () => {
-  state.autoMode = !state.autoMode;
-  dom.btnAuto.classList.toggle("active", state.autoMode);
-  if (!state.autoMode) clearTimeout(state.autoTimer);
-  else if (!state.isTyping) state.autoTimer = setTimeout(advance, 2200);
-});
+  dom.btnAuto.addEventListener("click", () => {
+    state.autoMode = !state.autoMode;
+    dom.btnAuto.classList.toggle("active", state.autoMode);
+    if (!state.autoMode) clearTimeout(state.autoTimer);
+    else if (!state.isTyping) state.autoTimer = setTimeout(advance, 2200);
+  });
 
-$("btn-skip").addEventListener("click", () => {
-  clearTimeout(state.autoTimer);
-  state.isTyping = false;
-  advance();
-});
+  document.getElementById("btn-skip").addEventListener("click", () => {
+    clearTimeout(state.autoTimer);
+    state.isTyping = false;
+    advance();
+  });
 
-$("btn-log").addEventListener("click", openLog);
-$("btn-close-log").addEventListener("click", () => dom.logPanel.classList.add("hidden"));
-$("btn-save").addEventListener("click", saveGame);
-$("btn-load").addEventListener("click", loadGame);
+  document.getElementById("btn-log").addEventListener("click", openLog);
+  document.getElementById("btn-close-log").addEventListener("click", () => dom.logPanel.classList.add("hidden"));
+  dom.btnSave.addEventListener("click", saveGame);
+  dom.btnLoad.addEventListener("click", loadGame);
+});
